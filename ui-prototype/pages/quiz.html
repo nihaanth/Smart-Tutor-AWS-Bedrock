@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTutor - Quiz</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span>🎓</span>
+            <span>SmartTutor</span>
+        </div>
+        <div class="navbar-user">
+            <span>Welcome, John Doe</span>
+            <div class="user-avatar">JD</div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container quiz-container">
+        <!-- Quiz Header (will be updated by JavaScript) -->
+        <div class="card" style="background: linear-gradient(135deg, #27AE60, #2ECC71); color: white;">
+            <h2 style="margin-bottom: 0.5rem;">📝 Loading Quiz...</h2>
+            <p style="margin: 0; opacity: 0.9;">Generating your personalized quiz...</p>
+        </div>
+
+        <!-- Quiz Instructions -->
+        <div class="alert alert-info">
+            <strong>Instructions:</strong> Answer all questions to the best of your ability. The quiz will be automatically
+            graded when you submit. Based on your score, the difficulty of future lessons will be adjusted automatically.
+        </div>
+
+        <!-- Quiz Questions (will be populated by JavaScript) -->
+        <div id="quizForm">
+            <div class="loading-spinner" style="text-align: center; padding: 3rem;">
+                <div style="font-size: 3rem; animation: spin 1s linear infinite;">⏳</div>
+                <p style="margin-top: 1rem; color: #7F8C8D;">Loading quiz questions...</p>
+            </div>
+        </div>
+
+        <!-- Results Section (Hidden Initially) -->
+        <div id="resultsSection" style="display: none;">
+            <div class="score-display">
+                <div class="score-circle" id="scoreCircle">
+                    4/5
+                </div>
+                <div class="score-feedback" id="scoreFeedback">
+                    Great work! You scored 80%
+                </div>
+                <div id="gradeDisplay" style="font-size: 1.5rem; margin-bottom: 1rem;">
+                    Grade: <strong style="color: var(--success-color);">B</strong>
+                </div>
+
+                <!-- Difficulty Adjustment Notice -->
+                <div id="difficultyNotice" class="alert alert-info" style="text-align: left;">
+                    <strong>📊 Difficulty Adjustment:</strong><br>
+                    Based on your performance (80%), your next lesson will remain at
+                    <span class="difficulty-badge difficulty-medium">Medium Level</span>
+                </div>
+
+                <!-- Detailed Results -->
+                <div class="card" style="text-align: left; margin-top: 2rem;">
+                    <div class="card-header">Detailed Results</div>
+                    <div class="card-body" id="detailedResults">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-2" style="margin-top: 2rem;">
+                    <a href="lesson.html" class="btn btn-primary">📖 Review Lesson</a>
+                    <a href="chat-tutor.html?topic=photosynthesis" class="btn btn-warning">💬 Ask Questions</a>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <a href="../student-dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load API Configuration and Quiz Integration -->
+    <script src="../js/api-config.js"></script>
+    <script src="../js/quiz.js"></script>
+</body>
+</html>

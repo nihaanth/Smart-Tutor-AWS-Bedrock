@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTutor - Student Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span>🎓</span>
+            <span>SmartTutor</span>
+        </div>
+        <div class="navbar-user">
+            <span>Welcome, Rahul</span>
+            <div class="user-avatar">JD</div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Current Difficulty Alert -->
+        <div class="alert alert-info">
+            <strong>Current Difficulty Level:</strong>
+            <span class="difficulty-badge difficulty-medium">Medium</span>
+            <p style="margin-top: 0.5rem;">Your lessons are customized based on your performance. Keep up the good work!</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Lessons Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">85%</div>
+                <div class="stat-label">Average Quiz Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Quizzes Taken</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Questions Asked</div>
+            </div>
+        </div>
+
+        <!-- Current Progress -->
+        <div class="card">
+            <div class="card-header">📈 Your Learning Progress</div>
+            <div class="card-body">
+                <h4>Biology - Photosynthesis Unit</h4>
+                <div style="margin: 1rem 0;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%;">75% Complete</div>
+                    </div>
+                </div>
+                <p>You're doing great! 3 more lessons to complete this unit.</p>
+            </div>
+        </div>
+
+        <!-- Available Topics -->
+        <div class="card">
+            <div class="card-header">📚 Choose Your Learning Topic</div>
+            <div class="card-body">
+                <div class="grid grid-3">
+                    <!-- Biology Topic -->
+                    <div class="topic-card" onclick="selectTopic('Biology', 'Photosynthesis')">
+                        <div class="topic-icon">🧬</div>
+                        <h3>Biology</h3>
+                        <p>Continue: Photosynthesis</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                    </div>
+
+                    <!-- Mathematics Topic -->
+                    <div class="topic-card" onclick="selectTopic('Mathematics', 'Fractions & Decimals')">
+                        <div class="topic-icon">📐</div>
+                        <h3>Mathematics</h3>
+                        <p>Next: Fractions & Decimals</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                    </div>
+
+                    <!-- Science Topic -->
+                    <div class="topic-card" onclick="selectTopic('Science', 'The Water Cycle')">
+                        <div class="topic-icon">🌍</div>
+                        <h3>Science</h3>
+                        <p>Start: The Water Cycle</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                    </div>
+
+                    <!-- History Topic -->
+                    <div class="topic-card" onclick="selectTopic('History', 'American Revolution')">
+                        <div class="topic-icon">📜</div>
+                        <h3>History</h3>
+                        <p>Review: American Revolution</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="difficulty-badge difficulty-hard">Hard</span>
+                        </div>
+                    </div>
+
+                    <!-- English Topic -->
+                    <div class="topic-card" onclick="selectTopic('English', 'Grammar Basics')">
+                        <div class="topic-icon">📖</div>
+                        <h3>English</h3>
+                        <p>Practice: Grammar Basics</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        </div>
+                    </div>
+
+                    <!-- Chemistry Topic -->
+                    <div class="topic-card" onclick="selectTopic('Chemistry', 'Atoms & Molecules')">
+                        <div class="topic-icon">⚗️</div>
+                        <h3>Chemistry</h3>
+                        <p>Begin: Atoms & Molecules</p>
+                        <div style="margin-top: 1rem;">
+                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+            <div class="card-header">🕒 Recent Activity</div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>Topic</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📝 Quiz Completed</td>
+                            <td>Photosynthesis</td>
+                            <td><strong style="color: var(--success-color);">4/5 (80%)</strong></td>
+                            <td>Nov 22, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>📖 Lesson Viewed</td>
+                            <td>Cell Structure</td>
+                            <td>-</td>
+                            <td>Nov 21, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>💬 Chat Session</td>
+                            <td>Photosynthesis</td>
+                            <td>8 questions</td>
+                            <td>Nov 20, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>📝 Quiz Completed</td>
+                            <td>Cell Division</td>
+                            <td><strong style="color: var(--warning-color);">3/5 (60%)</strong></td>
+                            <td>Nov 19, 2025</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-2" style="margin-top: 2rem;">
+            <a href="pages/chat-tutor.html" class="btn btn-primary" style="padding: 2rem; font-size: 1.2rem;">
+                💬 Ask AI Tutor a Question
+            </a>
+            <a href="pages/quiz.html" class="btn btn-success" style="padding: 2rem; font-size: 1.2rem;">
+                📝 Take Practice Quiz
+            </a>
+        </div>
+    </div>
+
+    <!-- Load API Configuration and Student Dashboard Integration -->
+    <script src="js/api-config.js"></script>
+    <!-- Temporary fix: use simplified version -->
+    <script src="js/student-dashboard-fix.js"></script>
+    <!-- Original version (commented out for debugging) -->
+    <!-- <script src="js/student-dashboard.js"></script> -->
+</body>
+</html>

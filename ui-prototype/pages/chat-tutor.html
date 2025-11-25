@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTutor - AI Chat Tutor</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span>🎓</span>
+            <span>SmartTutor</span>
+        </div>
+        <div class="navbar-user">
+            <span>Welcome, John Doe</span>
+            <div class="user-avatar">JD</div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="card" style="background: linear-gradient(135deg, #8E44AD, #9B59B6); color: white; margin-bottom: 1rem;">
+            <h2 style="margin-bottom: 0.5rem;">💬 AI Chat Tutor</h2>
+            <p style="margin: 0; opacity: 0.9;">Ask me anything about your lessons! I'm here to help 24/7.</p>
+        </div>
+
+        <!-- Info Alert -->
+        <div class="alert alert-info">
+            <strong>🤖 Powered by Amazon Bedrock:</strong> This AI tutor uses Claude 3 Sonnet to provide personalized explanations.
+            The difficulty level automatically adjusts based on your confusion signals.
+        </div>
+
+        <!-- Current Status -->
+        <div class="card" style="background: rgba(74, 144, 226, 0.1); padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Current Topic:</strong> Photosynthesis
+                </div>
+                <div>
+                    <strong>Difficulty:</strong> <span class="difficulty-badge difficulty-medium" id="currentDifficulty">Medium</span>
+                </div>
+                <div>
+                    <strong>Confusion Signals:</strong> <span id="confusionCount">0</span>/3
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-header">
+                🤖 SmartTutor AI Assistant
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Initial tutor message -->
+                <div class="message message-tutor">
+                    Hello! I'm your AI tutor. I'm here to help you understand any concepts you're learning about.
+                    Ask me anything about photosynthesis, or any other topic you're studying! 😊
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Ask me anything..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Send</button>
+            </div>
+        </div>
+
+        <!-- Quick Questions -->
+        <div class="card" style="margin-top: 1.5rem;">
+            <div class="card-header">💡 Quick Questions (Click to Ask)</div>
+            <div class="card-body">
+                <div class="grid grid-2">
+                    <button onclick="askQuickQuestion('What is photosynthesis?')" class="btn btn-secondary">
+                        What is photosynthesis?
+                    </button>
+                    <button onclick="askQuickQuestion('How do plants make oxygen?')" class="btn btn-secondary">
+                        How do plants make oxygen?
+                    </button>
+                    <button onclick="askQuickQuestion('Why are leaves green?')" class="btn btn-secondary">
+                        Why are leaves green?
+                    </button>
+                    <button onclick="askQuickQuestion('What is chlorophyll?')" class="btn btn-secondary">
+                        What is chlorophyll?
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="../student-dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        let confusionCount = 0;
+        let currentDifficulty = 'medium';
+        let messageCount = 0;
+
+        // Confusion keywords
+        const confusionKeywords = [
+            "don't understand",
+            "confused",
+            "what does that mean",
+            "i don't get it",
+            "can you explain",
+            "still don't understand",
+            "not sure",
+            "unclear",
+            "complicated",
+            "difficult",
+            "help",
+            "simpler",
+            "easier"
+        ];
+
+        // Mock AI responses based on difficulty and question
+        const mockResponses = {
+            easy: {
+                default: "Let me explain that in a very simple way. ",
+                photosynthesis: "Photosynthesis is how plants make their food! Think of it like cooking - plants use sunlight like a stove, water and air like ingredients, and they create sugar (food) and oxygen. The green color in leaves (chlorophyll) is like the pot that catches the sunlight! 🌱☀️",
+                oxygen: "Great question! When plants make their food during photosynthesis, they use some parts of water but don't need all the oxygen. So they release that extra oxygen into the air - that's the oxygen we breathe! It's like when you're cooking and have leftover ingredients. 🌬️",
+                green: "Leaves are green because they have a special substance called chlorophyll. Chlorophyll acts like sunglasses that only let green light through - so that's the color we see! All the other colors get absorbed and used for making food. 🟢",
+                chlorophyll: "Chlorophyll is the green stuff in leaves. Think of it like a solar panel - it catches sunlight and turns it into energy that plants can use. That's why it's so important for photosynthesis! 🔋"
+            },
+            medium: {
+                default: "That's a good question. Let me explain: ",
+                photosynthesis: "Photosynthesis is the biochemical process by which plants convert light energy into chemical energy. During this process, chlorophyll in the chloroplasts absorbs light energy, which is used to convert carbon dioxide and water into glucose and oxygen. The chemical equation is: 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂.",
+                oxygen: "During the light-dependent reactions of photosynthesis, water molecules (H₂O) are split in a process called photolysis. This releases electrons, hydrogen ions, and oxygen. The plant uses the electrons and hydrogen for glucose production, but the oxygen is a byproduct that's released through the stomata on the leaf surface.",
+                green: "Plants appear green because chlorophyll reflects green wavelengths of light while absorbing red and blue wavelengths. The absorbed light energy is used for photosynthesis, while the reflected green light is what reaches our eyes.",
+                chlorophyll: "Chlorophyll is a photosynthetic pigment found in chloroplasts. It has a porphyrin ring structure with a central magnesium atom. Chlorophyll a and b are the main types, each absorbing light at slightly different wavelengths (chlorophyll a: 430nm and 662nm; chlorophyll b: 453nm and 642nm)."
+            },
+            hard: {
+                default: "That's an excellent advanced question. ",
+                photosynthesis: "Photosynthesis involves two distinct stages: light-dependent reactions occurring in the thylakoid membranes, and light-independent reactions (Calvin cycle) in the stroma. The light-dependent reactions involve photosystems I and II, which create a proton gradient that drives ATP synthesis via chemiosmosis. The Calvin cycle fixes CO₂ through the enzyme RuBisCO, producing G3P which is converted to glucose through gluconeogenesis.",
+                oxygen: "Oxygen evolution occurs during Photosystem II when the oxygen-evolving complex catalyzes the oxidation of two water molecules. This releases four electrons (which replenish P680+), four protons (contributing to the proton gradient), and molecular oxygen. This process is manganese-dependent and occurs on the lumenal side of the thylakoid membrane.",
+                green: "The green coloration is due to chlorophyll's conjugated pi-electron system in its porphyrin ring structure. This allows for specific absorption spectra with peaks in the blue (∼430-450nm) and red (∼640-680nm) regions, while reflecting green wavelengths (∼500-570nm). This selective absorption maximizes photon capture efficiency for photosynthetic electron transport.",
+                chlorophyll: "Chlorophyll molecules consist of a tetrapyrrole ring with a central Mg²⁺ ion and a hydrophobic phytol tail. In the photosystem complexes, chlorophyll exists as both core pigments (P680, P700) and antenna complexes. Energy transfer occurs through Förster resonance energy transfer (FRET) until it reaches the reaction center where charge separation occurs."
+            }
+        };
+
+        function detectConfusion(text) {
+            const lowerText = text.toLowerCase();
+            return confusionKeywords.some(keyword => lowerText.includes(keyword));
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Add student message
+            addMessage(message, 'student');
+
+            // Clear input
+            input.value = '';
+
+            // Check for confusion
+            const isConfused = detectConfusion(message);
+            if (isConfused) {
+                confusionCount++;
+                updateConfusionStatus();
+
+                // Adjust difficulty if needed
+                if (confusionCount >= 2 && currentDifficulty !== 'easy') {
+                    currentDifficulty = 'easy';
+                    updateDifficultyDisplay();
+
+                    // Show adjustment message
+                    setTimeout(() => {
+                        addMessage("I notice you're finding this challenging. Let me simplify my explanations for you.", 'tutor', true);
+                    }, 1000);
+                }
+            }
+
+            // Generate response
+            setTimeout(() => {
+                const response = generateResponse(message);
+                addMessage(response, 'tutor');
+            }, 1500);
+        }
+
+        function generateResponse(question) {
+            const lowerQuestion = question.toLowerCase();
+
+            // Select response based on topic and difficulty
+            let response = mockResponses[currentDifficulty].default;
+
+            if (lowerQuestion.includes('photosynthesis') && lowerQuestion.includes('what')) {
+                response = mockResponses[currentDifficulty].photosynthesis;
+            } else if (lowerQuestion.includes('oxygen')) {
+                response = mockResponses[currentDifficulty].oxygen;
+            } else if (lowerQuestion.includes('green') || lowerQuestion.includes('color')) {
+                response = mockResponses[currentDifficulty].green;
+            } else if (lowerQuestion.includes('chlorophyll')) {
+                response = mockResponses[currentDifficulty].chlorophyll;
+            } else {
+                // Generic helpful response
+                response = `That's a great question! Based on what we know about photosynthesis, ${mockResponses[currentDifficulty].default.toLowerCase()}plants use this process to convert light energy into chemical energy stored in glucose. Is there a specific aspect you'd like me to explain more?`;
+            }
+
+            return response;
+        }
+
+        function addMessage(text, sender, isSystem = false) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+
+            messageDiv.className = `message message-${sender}`;
+
+            if (isSystem) {
+                messageDiv.style.background = '#F39C12';
+                messageDiv.style.color = 'white';
+            }
+
+            messageDiv.textContent = text;
+
+            messagesDiv.appendChild(messageDiv);
+
+            // Scroll to bottom
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            messageCount++;
+        }
+
+        function askQuickQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+
+        function updateConfusionStatus() {
+            document.getElementById('confusionCount').textContent = confusionCount;
+
+            if (confusionCount >= 2) {
+                document.getElementById('confusionCount').style.color = 'var(--danger-color)';
+            }
+        }
+
+        function updateDifficultyDisplay() {
+            const badge = document.getElementById('currentDifficulty');
+            badge.textContent = currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
+            badge.className = `difficulty-badge difficulty-${currentDifficulty}`;
+        }
+
+        // Add welcome effect
+        setTimeout(() => {
+            addMessage("I can see you're learning about Photosynthesis. What would you like to know?", 'tutor');
+        }, 1000);
+    </script>
+</body>
+</html>

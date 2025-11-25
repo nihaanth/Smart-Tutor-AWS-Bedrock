@@ -1,0 +1,131 @@
+{
+  "projectName": "SmartTutor",
+  "environment": "dev",
+  "region": "us-east-1",
+
+  "apiGateway": {
+    "name": "SmartTutor-API",
+    "description": "API Gateway for SmartTutor GenAI Learning Platform",
+    "stageName": "prod",
+    "cors": {
+      "enabled": true,
+      "allowOrigins": ["*"],
+      "allowMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "allowHeaders": ["Content-Type", "Authorization"]
+    }
+  },
+
+  "lambda": {
+    "runtime": "python3.9",
+    "timeout": 300,
+    "memorySize": 512,
+    "functions": {
+      "lessonPlanGenerator": {
+        "name": "SmartTutor-LessonPlanGenerator",
+        "handler": "lesson_plan_generator.lambda_handler",
+        "description": "Generates weekly lesson plans using Amazon Bedrock",
+        "environment": {
+          "AWS_REGION": "us-east-1",
+          "SMARTTUTOR_BUCKET": "smarttutor-content-dev",
+          "LESSON_PLANS_TABLE": "SmartTutor-LessonPlans"
+        },
+        "permissions": [
+          "bedrock:InvokeModel",
+          "s3:PutObject",
+          "s3:GetObject",
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+      }
+    }
+  },
+
+  "s3": {
+    "buckets": {
+      "content": {
+        "name": "smarttutor-content-dev",
+        "description": "Stores AI-generated lessons, quizzes, and lesson plans",
+        "versioning": true,
+        "encryption": "AES256",
+        "folders": [
+          "lessons/",
+          "quizzes/",
+          "lesson-plans/",
+          "quiz-results/",
+          "chat-logs/"
+        ]
+      }
+    }
+  },
+
+  "dynamodb": {
+    "tables": {
+      "lessonPlans": {
+        "tableName": "SmartTutor-LessonPlans",
+        "partitionKey": {
+          "name": "planId",
+          "type": "S"
+        },
+        "attributes": [
+          {"name": "planId", "type": "S"},
+          {"name": "teacherId", "type": "S"},
+          {"name": "classId", "type": "S"},
+          {"name": "weekStartDate", "type": "S"}
+        ],
+        "globalSecondaryIndexes": [
+          {
+            "indexName": "TeacherClassIndex",
+            "partitionKey": {"name": "teacherId", "type": "S"},
+            "sortKey": {"name": "weekStartDate", "type": "S"}
+          }
+        ],
+        "billingMode": "PAY_PER_REQUEST"
+      },
+      "students": {
+        "tableName": "SmartTutor-Students",
+        "partitionKey": {
+          "name": "studentId",
+          "type": "S"
+        },
+        "billingMode": "PAY_PER_REQUEST"
+      }
+    }
+  },
+
+  "bedrock": {
+    "models": {
+      "claude3Sonnet": {
+        "modelId": "anthropic.claude-3-sonnet-20240229-v1:0",
+        "useCases": ["lessonGeneration", "chatTutor", "lessonPlanGeneration"],
+        "maxTokens": 4000,
+        "temperature": 0.7
+      },
+      "llama3": {
+        "modelId": "meta.llama3-70b-instruct-v1:0",
+        "useCases": ["quizGeneration"],
+        "maxTokens": 2000,
+        "temperature": 0.5
+      }
+    }
+  },
+
+  "apiEndpoints": {
+    "/teacher/lesson-plan/generate": {
+      "method": "POST",
+      "lambda": "lessonPlanGenerator",
+      "description": "Generate weekly lesson plan",
+      "authentication": false,
+      "cors": true
+    },
+    "/teacher/lesson-plan/get": {
+      "method": "GET",
+      "lambda": "lessonPlanGetter",
+      "description": "Retrieve existing lesson plan",
+      "authentication": false,
+      "cors": true
+    }
+  }
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTutor - Lesson: Photosynthesis</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span>🎓</span>
+            <span>SmartTutor</span>
+        </div>
+        <div class="navbar-user">
+            <span>Welcome, John Doe</span>
+            <div class="user-avatar">JD</div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div style="margin-bottom: 1rem; color: #7F8C8D;">
+            <a href="../student-dashboard.html" style="color: var(--primary-color);">Dashboard</a>
+            / <span class="breadcrumb-subject">Biology</span>
+            / <span class="breadcrumb-topic">Photosynthesis</span>
+        </div>
+
+        <!-- Lesson Info Bar -->
+        <div class="card" style="background: linear-gradient(135deg, var(--primary-color), #5DADE2); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 class="lesson-title" style="margin-bottom: 0.5rem;">🧬 Photosynthesis</h2>
+                    <p style="margin: 0; opacity: 0.9;"><span class="lesson-subject">Biology</span> | Generated for you</p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="difficulty-badge difficulty-medium lesson-difficulty" style="background: rgba(255,255,255,0.3); color: white; font-size: 1rem;">
+                        Medium Level
+                    </span>
+                    <p class="lesson-time" style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.9;">
+                        ⏱️ Estimated time: 15 minutes
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Generated Notice -->
+        <div class="alert alert-info">
+            <strong>🤖 AI-Generated Content:</strong> This lesson was personalized for your current learning level by our AI tutor.
+            Feel free to ask questions if anything is unclear!
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Introduction Section -->
+            <div class="card">
+                <h2>📖 Introduction</h2>
+                <p class="intro-content">
+                    Loading lesson content...
+                </p>
+            </div>
+
+            <!-- Key Concepts Section -->
+            <div class="card">
+                <h2>🔑 Key Concepts</h2>
+                <div class="concepts-container">
+                    <p>Loading concepts...</p>
+                </div>
+            </div>
+
+            <!-- Examples Section -->
+            <div class="card">
+                <h2>💡 Real-World Examples</h2>
+                <div class="examples-container">
+                    <p>Loading examples...</p>
+                </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="card">
+                <h2>📝 Summary</h2>
+                <p class="summary-content">
+                    Loading summary...
+                </p>
+            </div>
+
+            <!-- Check Your Understanding Section -->
+            <div class="card" style="background: rgba(74, 144, 226, 0.05); border-left: 4px solid var(--primary-color);">
+                <h2>✓ Check Your Understanding</h2>
+                <div class="questions-container">
+                    <p>Loading questions...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-2" style="margin-top: 2rem;">
+            <a href="chat-tutor.html?topic=photosynthesis" class="btn btn-primary" style="padding: 1.5rem; text-align: center;">
+                💬 Ask Questions About This Lesson
+            </a>
+            <a href="quiz.html?topic=photosynthesis" class="btn btn-success" style="padding: 1.5rem; text-align: center;">
+                📝 Take Quiz on Photosynthesis
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="../student-dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Load dynamic lesson content -->
+    <script src="../js/lesson-content.js"></script>
+
+    <script>
+        // Track lesson view
+        const urlParams = new URLSearchParams(window.location.search);
+        const topic = urlParams.get('topic') || 'Photosynthesis';
+        console.log('Lesson viewed:', topic);
+
+        // Simulate tracking analytics
+        const lessonData = {
+            topic: topic,
+            startTime: new Date(),
+            studentId: 'student_001'
+        };
+    </script>
+</body>
+</html>

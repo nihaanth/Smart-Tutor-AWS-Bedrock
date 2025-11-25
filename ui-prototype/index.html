@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTutor - Welcome</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .landing-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+
+        .landing-content {
+            text-align: center;
+            color: white;
+            max-width: 800px;
+        }
+
+        .landing-title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .landing-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+        }
+
+        .role-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            width: 100%;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .role-icon {
+            font-size: 5rem;
+            line-height: 1;
+        }
+
+        .role-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2C3E50;
+            margin: 0;
+        }
+
+        .role-description {
+            color: #7F8C8D;
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .role-features {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0 0;
+            text-align: left;
+            width: 100%;
+        }
+
+        .role-features li {
+            padding: 0.5rem 0;
+            color: #34495E;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .role-features li:before {
+            content: "✓";
+            color: #27AE60;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .role-card.student {
+            border-top: 5px solid #3498DB;
+        }
+
+        .role-card.teacher {
+            border-top: 5px solid #E74C3C;
+        }
+
+        @media (max-width: 768px) {
+            .landing-title {
+                font-size: 2.5rem;
+            }
+
+            .landing-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .role-selection {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <div class="landing-content">
+            <div class="landing-title">🎓 SmartTutor</div>
+            <div class="landing-subtitle">
+                AI-Powered Personalized Learning Platform
+            </div>
+
+            <div class="role-selection">
+                <!-- Student Card -->
+                <a href="student-dashboard.html" class="role-card student">
+                    <div class="role-icon">👨‍🎓</div>
+                    <h2 class="role-title">I'm a Student</h2>
+                    <p class="role-description">
+                        Access personalized lessons, take adaptive quizzes, and chat with your AI tutor
+                    </p>
+                    <ul class="role-features">
+                        <li>Personalized learning content</li>
+                        <li>Adaptive difficulty quizzes</li>
+                        <li>24/7 AI tutor assistance</li>
+                        <li>Track your progress</li>
+                    </ul>
+                </a>
+
+                <!-- Teacher Card -->
+                <a href="pages/teacher-dashboard.html" class="role-card teacher">
+                    <div class="role-icon">👨‍🏫</div>
+                    <h2 class="role-title">I'm a Teacher</h2>
+                    <p class="role-description">
+                        Generate lesson plans, monitor student progress, and access analytics
+                    </p>
+                    <ul class="role-features">
+                        <li>AI-generated lesson plans</li>
+                        <li>Real-time student analytics</li>
+                        <li>Quiz results dashboard</li>
+                        <li>Performance insights</li>
+                    </ul>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
