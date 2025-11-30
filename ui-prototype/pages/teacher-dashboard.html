@@ -11,9 +11,8 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand">
-            <span>🎓</span>
-            <span>SmartTutor</span>
-            <span style="margin-left: 1rem; font-size: 0.9rem; opacity: 0.8;">Teacher Portal</span>
+            <span style="font-weight: 700; font-size: 1.2rem;">SmartTutor</span>
+            <span style="margin-left: 1rem; font-size: 0.9rem; opacity: 0.8;">| Teacher Portal</span>
         </div>
         <div class="navbar-user">
             <span>Prof. Sarah Johnson</span>
@@ -24,14 +23,14 @@
     <!-- Main Container -->
     <div class="container-fluid">
         <!-- Welcome Section -->
-        <div class="card" style="background: linear-gradient(135deg, var(--primary-color), #5DADE2); color: white;">
-            <h2 style="margin-bottom: 0.5rem;">👋 Welcome back, Prof. Johnson</h2>
-            <p style="margin: 0; opacity: 0.9;">Here's what's happening with your students today</p>
+        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h2 style="margin-bottom: 0.5rem; font-weight: 600;">Welcome back, Prof. Johnson</h2>
+            <p style="margin: 0; opacity: 0.95;">Here's what's happening with your students today</p>
         </div>
 
         <!-- AI Generated Alert -->
         <div class="alert alert-success">
-            <strong>🤖 AI-Powered Insights:</strong> All analytics and recommendations are generated using Amazon Bedrock AI.
+            <strong>AI-Powered Insights:</strong> All analytics and recommendations are generated using Amazon Bedrock AI.
             Weekly lesson plans are automatically created based on class performance.
         </div>
 
@@ -41,19 +40,19 @@
         <!-- Stats Overview -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value">42</div>
+                <div class="stat-value" id="totalStudents">0</div>
                 <div class="stat-label">Total Students</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">156</div>
-                <div class="stat-label">Quizzes Taken Today</div>
+                <div class="stat-value" id="totalQuizzes">0</div>
+                <div class="stat-label">Total Quizzes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">78%</div>
+                <div class="stat-value" id="classAverage">0%</div>
                 <div class="stat-label">Class Average</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">12</div>
+                <div class="stat-value" id="needAttention">0</div>
                 <div class="stat-label">Need Attention</div>
             </div>
         </div>
@@ -64,7 +63,7 @@
             <div>
                 <!-- Class Performance Chart -->
                 <div class="card">
-                    <div class="card-header">📊 Class Performance Overview</div>
+                    <div class="card-header" style="background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">Class Performance Overview</div>
                     <div class="card-body">
                         <canvas id="performanceChart"></canvas>
                     </div>
@@ -72,7 +71,7 @@
 
                 <!-- Weak Topics Analysis -->
                 <div class="card">
-                    <div class="card-header">⚠️ Topics Needing Review (AI-Identified)</div>
+                    <div class="card-header" style="background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">Topics Needing Review (AI-Identified)</div>
                     <div class="card-body">
                         <canvas id="weakTopicsChart"></canvas>
                     </div>
@@ -83,7 +82,7 @@
             <div>
                 <!-- Difficulty Distribution -->
                 <div class="card">
-                    <div class="card-header">🎚️ Student Difficulty Levels</div>
+                    <div class="card-header" style="background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">Student Difficulty Levels</div>
                     <div class="card-body">
                         <canvas id="difficultyChart"></canvas>
                         <div style="margin-top: 1rem;">
@@ -96,7 +95,7 @@
 
                 <!-- Recent Quiz Scores -->
                 <div class="card">
-                    <div class="card-header">📈 Recent Quiz Trends</div>
+                    <div class="card-header" style="background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">Recent Quiz Trends</div>
                     <div class="card-body">
                         <canvas id="trendChart"></canvas>
                     </div>
@@ -106,7 +105,7 @@
 
         <!-- Students Requiring Attention -->
         <div class="card">
-            <div class="card-header">🚨 Students Requiring Attention (AI-Flagged)</div>
+            <div class="card-header" style="background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">Students Requiring Attention (AI-Flagged)</div>
             <div class="card-body">
                 <table class="table">
                     <thead>
@@ -119,30 +118,11 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="attentionTableBody">
                         <tr>
-                            <td><strong>Alice Martinez</strong></td>
-                            <td><span style="color: var(--danger-color);">45%</span></td>
-                            <td><span class="difficulty-badge difficulty-easy">Easy</span></td>
-                            <td>8 times</td>
-                            <td>1 hour ago</td>
-                            <td><span style="color: var(--danger-color);">⚠️ Struggling</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Bob Chen</strong></td>
-                            <td><span style="color: var(--warning-color);">62%</span></td>
-                            <td><span class="difficulty-badge difficulty-easy">Easy</span></td>
-                            <td>5 times</td>
-                            <td>3 hours ago</td>
-                            <td><span style="color: var(--warning-color);">⚠️ Needs Review</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Carol Davis</strong></td>
-                            <td><span style="color: var(--warning-color);">68%</span></td>
-                            <td><span class="difficulty-badge difficulty-medium">Medium</span></td>
-                            <td>3 times</td>
-                            <td>30 min ago</td>
-                            <td><span style="color: var(--warning-color);">⚠️ Monitoring</span></td>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                                No students requiring attention.
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -151,16 +131,16 @@
 
         <!-- Student Quiz Results (Real-time from Backend) -->
         <div class="card">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <span>📊 Student Quiz Results (Live Data)</span>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">
+                <span>Student Quiz Results (Live Data)</span>
                 <button onclick="displayQuizResults()" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
-                    🔄 Refresh Results
+                    Refresh Results
                 </button>
             </div>
             <div class="card-body">
                 <div id="quizResultsContainer">
                     <div style="text-align: center; padding: 2rem;">
-                        <div style="font-size: 2rem;">⏳</div>
+                        <div style="font-size: 2rem; color: #95a5a6;">Loading...</div>
                         <p>Loading quiz results...</p>
                     </div>
                 </div>
@@ -169,17 +149,17 @@
 
         <!-- AI-Generated Weekly Lesson Plan -->
         <div class="card">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <span>📅 AI-Generated Weekly Lesson Plan</span>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">
+                <span>AI-Generated Weekly Lesson Plan</span>
                 <button id="regenerate-plan-btn" class="btn btn-warning" style="padding: 0.75rem 1.5rem;">
-                    🔄 Regenerate Plan
+                    Regenerate Plan
                 </button>
             </div>
             <div class="card-body">
                 <!-- Dynamic lesson plan will be loaded here -->
                 <div id="lesson-plan-container">
                     <div style="text-align: center; padding: 3rem 2rem;">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+                        <div style="font-size: 2.5rem; color: #95a5a6; margin-bottom: 1rem;">Loading...</div>
                         <p style="color: #7F8C8D;">Loading lesson plan...</p>
                     </div>
                 </div>
@@ -188,7 +168,7 @@
 
         <!-- All Students Table -->
         <div class="card">
-            <div class="card-header">👥 All Students - Performance Summary</div>
+            <div class="card-header" style="background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">All Students - Performance Summary</div>
             <div class="card-body">
                 <table class="table">
                     <thead>
@@ -201,54 +181,11 @@
                             <th>Last Active</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="allStudentsTableBody">
                         <tr>
-                            <td><strong>Alice Martinez</strong></td>
-                            <td>8</td>
-                            <td>6</td>
-                            <td><span style="color: var(--danger-color);">45%</span></td>
-                            <td><span class="difficulty-badge difficulty-easy">Easy</span></td>
-                            <td>1 hour ago</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Bob Chen</strong></td>
-                            <td>12</td>
-                            <td>10</td>
-                            <td><span style="color: var(--warning-color);">62%</span></td>
-                            <td><span class="difficulty-badge difficulty-easy">Easy</span></td>
-                            <td>3 hours ago</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Carol Davis</strong></td>
-                            <td>15</td>
-                            <td>12</td>
-                            <td><span style="color: var(--warning-color);">68%</span></td>
-                            <td><span class="difficulty-badge difficulty-medium">Medium</span></td>
-                            <td>30 min ago</td>
-                        </tr>
-                        <tr>
-                            <td><strong>David Kim</strong></td>
-                            <td>18</td>
-                            <td>15</td>
-                            <td><span style="color: var(--success-color);">85%</span></td>
-                            <td><span class="difficulty-badge difficulty-hard">Hard</span></td>
-                            <td>2 hours ago</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Emma Wilson</strong></td>
-                            <td>20</td>
-                            <td>16</td>
-                            <td><span style="color: var(--success-color);">92%</span></td>
-                            <td><span class="difficulty-badge difficulty-hard">Hard</span></td>
-                            <td>1 hour ago</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Frank Garcia</strong></td>
-                            <td>14</td>
-                            <td>11</td>
-                            <td><span style="color: var(--success-color);">78%</span></td>
-                            <td><span class="difficulty-badge difficulty-medium">Medium</span></td>
-                            <td>4 hours ago</td>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                                No student data available yet.
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -265,7 +202,7 @@
                 labels: ['<60%', '60-70%', '70-80%', '80-90%', '90-100%'],
                 datasets: [{
                     label: 'Number of Students',
-                    data: [5, 8, 15, 10, 4],
+                    data: [2, 1, 0, 0, 0],
                     backgroundColor: [
                         'rgba(231, 76, 60, 0.7)',
                         'rgba(243, 156, 18, 0.7)',
@@ -286,7 +223,7 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            stepSize: 5
+                            stepSize: 1
                         }
                     }
                 }
@@ -296,12 +233,12 @@
         // Weak Topics Chart
         const weakTopicsCtx = document.getElementById('weakTopicsChart').getContext('2d');
         new Chart(weakTopicsCtx, {
-            type: 'horizontalBar',
+            type: 'bar',
             data: {
-                labels: ['Chlorophyll Function', 'Calvin Cycle', 'Light Reactions', 'Stomata Role', 'Equation Balance'],
+                labels: ['Grammar Basics', 'American Revolution', 'Water Cycle', 'Photosynthesis', 'Cell Division'],
                 datasets: [{
                     label: 'Students Struggling (%)',
-                    data: [60, 45, 35, 28, 22],
+                    data: [80, 100, 80, 20, 0],
                     backgroundColor: 'rgba(231, 76, 60, 0.7)',
                     borderColor: 'rgba(231, 76, 60, 1)',
                     borderWidth: 1
@@ -336,7 +273,7 @@
             data: {
                 labels: ['Easy', 'Medium', 'Hard'],
                 datasets: [{
-                    data: [15, 20, 7],
+                    data: [1, 1, 1],
                     backgroundColor: [
                         'rgba(39, 174, 96, 0.7)',
                         'rgba(243, 156, 18, 0.7)',
@@ -362,9 +299,9 @@
                 labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
                 datasets: [{
                     label: 'Class Average',
-                    data: [65, 70, 72, 75, 78],
-                    borderColor: 'rgba(74, 144, 226, 1)',
-                    backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                    data: [45, 38, 35, 40, 36.67],
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
                     tension: 0.4,
                     fill: true
                 }]
@@ -382,6 +319,531 @@
                         }
                     }
                 }
+            }
+        });
+    </script>
+
+    <!-- Load Student Data from DynamoDB (via API) -->
+    <script>
+        async function loadStudentDataFromDynamoDB() {
+            console.log('Loading teacher dashboard data from DynamoDB...');
+
+            try {
+                // Fetch quiz results from DynamoDB via API
+                const response = await makeAPIRequest(
+                    API_CONFIG.ROUTES.GET_QUIZ_RESULTS + '?limit=100',
+                    'GET'
+                );
+
+                console.log('DynamoDB Response:', response);
+
+                if (response.success && response.results) {
+                    const quizResults = response.results;
+                    const statistics = response.statistics;
+
+                    console.log(`Loaded ${quizResults.length} quiz results from DynamoDB`);
+
+                    // Display quiz results
+                    if (quizResults.length > 0) {
+                        displayQuizResultsFromDynamoDB(quizResults);
+                        updateStatsFromDynamoDB(statistics);
+                        updateChartsFromDynamoDB(quizResults, statistics);
+                    } else {
+                        console.log('No quiz results in DynamoDB yet');
+                    }
+                } else {
+                    console.warn('Failed to load from DynamoDB, falling back to localStorage');
+                    loadStudentDataFromLocalStorage();
+                }
+
+            } catch (error) {
+                console.error('Error loading from DynamoDB:', error);
+                console.warn('Falling back to localStorage');
+                loadStudentDataFromLocalStorage();
+            }
+        }
+
+        function loadStudentDataFromLocalStorage() {
+            const allStudents = JSON.parse(localStorage.getItem('allStudents') || '{}');
+            const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+
+            console.log('Loading teacher dashboard data from localStorage...');
+            console.log('All Students:', allStudents);
+            console.log('Quiz History:', quizHistory);
+
+            // Always display quiz results if they exist
+            if (quizHistory.length > 0) {
+                displayQuizResultsFromLocalStorage(quizHistory);
+            }
+
+            // Calculate per-student statistics
+            const studentStats = {};
+            const studentQuizzes = {};
+
+            // Group quizzes by student
+            quizHistory.forEach(quiz => {
+                const studentKey = quiz.studentId || quiz.studentName || 'Unknown';
+                if (!studentQuizzes[studentKey]) {
+                    studentQuizzes[studentKey] = [];
+                }
+                studentQuizzes[studentKey].push(quiz);
+            });
+
+            // Calculate stats for each student
+            Object.keys(studentQuizzes).forEach(studentKey => {
+                const quizzes = studentQuizzes[studentKey];
+                const totalScore = quizzes.reduce((sum, quiz) => sum + quiz.percentage, 0);
+                const averageScore = Math.round(totalScore / quizzes.length);
+
+                // Get student name
+                const studentName = quizzes[0].studentName || studentKey;
+
+                // Get most recent quiz
+                const sortedQuizzes = [...quizzes].sort((a, b) => b.timestamp - a.timestamp);
+                const lastActive = new Date(sortedQuizzes[0].date);
+
+                // Determine difficulty
+                let difficulty = 'medium';
+                let difficultyClass = 'difficulty-medium';
+                if (averageScore >= 80) {
+                    difficulty = 'hard';
+                    difficultyClass = 'difficulty-hard';
+                } else if (averageScore < 60) {
+                    difficulty = 'easy';
+                    difficultyClass = 'difficulty-easy';
+                }
+
+                studentStats[studentKey] = {
+                    name: studentName,
+                    quizzesTaken: quizzes.length,
+                    averageScore: averageScore,
+                    difficulty: difficulty,
+                    difficultyClass: difficultyClass,
+                    lastActive: lastActive,
+                    needsAttention: averageScore < 70
+                };
+            });
+
+            // Update "All Students - Performance Summary" table
+            const allStudentsTable = document.getElementById('allStudentsTableBody');
+            if (allStudentsTable) {
+                if (Object.keys(studentStats).length === 0) {
+                    allStudentsTable.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                                No student data available yet.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    allStudentsTable.innerHTML = Object.values(studentStats).map(student => {
+                        const scoreColor = student.averageScore >= 70 ? 'var(--success-color)' :
+                                         (student.averageScore >= 60 ? 'var(--warning-color)' : 'var(--danger-color)');
+                        const timeAgo = getTimeAgo(student.lastActive);
+
+                        return `
+                            <tr>
+                                <td><strong>${student.name}</strong></td>
+                                <td>0</td>
+                                <td>${student.quizzesTaken}</td>
+                                <td><span style="color: ${scoreColor};">${student.averageScore}%</span></td>
+                                <td><span class="difficulty-badge ${student.difficultyClass}">${student.difficulty.charAt(0).toUpperCase() + student.difficulty.slice(1)}</span></td>
+                                <td>${timeAgo}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+
+            // Update "Students Requiring Attention" table
+            const attentionTable = document.getElementById('attentionTableBody');
+            if (attentionTable) {
+                const studentsNeedingAttention = Object.values(studentStats).filter(s => s.needsAttention);
+
+                // Debug logging
+                console.log('Student Stats:', studentStats);
+                console.log('Students Needing Attention:', studentsNeedingAttention);
+                console.log('Total students with issues:', studentsNeedingAttention.length);
+
+                if (studentsNeedingAttention.length === 0) {
+                    // Check if we have any students at all
+                    const hasAnyStudents = Object.keys(studentStats).length > 0;
+                    const message = hasAnyStudents
+                        ? 'No students requiring attention. Great job!'
+                        : 'No student data available yet. Students will appear here when they complete quizzes.';
+
+                    attentionTable.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                                ${message}
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    attentionTable.innerHTML = studentsNeedingAttention.map(student => {
+                        const scoreColor = student.averageScore >= 60 ? 'var(--warning-color)' : 'var(--danger-color)';
+                        const status = student.averageScore < 50 ? 'Struggling' : 'Needs Review';
+                        const statusColor = student.averageScore < 50 ? 'var(--danger-color)' : 'var(--warning-color)';
+                        const timeAgo = getTimeAgo(student.lastActive);
+
+                        return `
+                            <tr>
+                                <td><strong>${student.name}</strong></td>
+                                <td><span style="color: ${scoreColor};">${student.averageScore}%</span></td>
+                                <td><span class="difficulty-badge ${student.difficultyClass}">${student.difficulty.charAt(0).toUpperCase() + student.difficulty.slice(1)}</span></td>
+                                <td>0 times</td>
+                                <td>${timeAgo}</td>
+                                <td><span style="color: ${statusColor};">${status}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+
+            // Update stats cards
+            if (Object.keys(studentStats).length > 0) {
+                const totalStudents = Object.keys(studentStats).length;
+                const totalQuizzes = quizHistory.length;
+                const overallAverage = Math.round(
+                    Object.values(studentStats).reduce((sum, s) => sum + s.averageScore, 0) / totalStudents
+                );
+                const needsAttention = Object.values(studentStats).filter(s => s.needsAttention).length;
+
+                updateStatsCards(totalQuizzes, overallAverage, totalStudents, needsAttention);
+            }
+        }
+
+        function displayQuizResultsFromLocalStorage(quizHistory) {
+            const container = document.getElementById('quizResultsContainer');
+            if (!container) return;
+
+            if (quizHistory.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <p style="color: #95a5a6;">No quiz results available yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by most recent first
+            const sortedQuizzes = [...quizHistory].sort((a, b) => b.timestamp - a.timestamp);
+
+            container.innerHTML = `
+                <table class="table" style="width: 100%;">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 0.75rem;">Student</th>
+                            <th style="padding: 0.75rem;">Subject</th>
+                            <th style="padding: 0.75rem;">Topic</th>
+                            <th style="padding: 0.75rem;">Score</th>
+                            <th style="padding: 0.75rem;">Percentage</th>
+                            <th style="padding: 0.75rem;">Status</th>
+                            <th style="padding: 0.75rem;">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedQuizzes.map(quiz => {
+                            const date = new Date(quiz.date);
+                            const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                            const scoreColor = quiz.percentage >= 70 ? 'var(--success-color)' : (quiz.percentage >= 60 ? 'var(--warning-color)' : 'var(--danger-color)');
+                            const status = quiz.passed ? 'Passed' : 'Failed';
+                            const statusColor = quiz.passed ? 'var(--success-color)' : 'var(--danger-color)';
+                            // Use studentName if available, otherwise fall back to studentId
+                            const studentDisplay = quiz.studentName || quiz.studentId || 'Anonymous';
+
+                            return `
+                                <tr style="border-bottom: 1px solid #ecf0f1;">
+                                    <td style="padding: 0.75rem;"><strong>${studentDisplay}</strong></td>
+                                    <td style="padding: 0.75rem;">${quiz.subject}</td>
+                                    <td style="padding: 0.75rem;">${quiz.topic}</td>
+                                    <td style="padding: 0.75rem;">${quiz.score}/${quiz.total}</td>
+                                    <td style="padding: 0.75rem;"><strong style="color: ${scoreColor};">${quiz.percentage}%</strong></td>
+                                    <td style="padding: 0.75rem;"><span style="color: ${statusColor};">${status}</span></td>
+                                    <td style="padding: 0.75rem;">${formattedDate}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function updateStatsCards(totalQuizzes, classAverage, totalStudents, needsAttention) {
+            // Update total students
+            const studentsCard = document.getElementById('totalStudents');
+            if (studentsCard) {
+                studentsCard.textContent = totalStudents || 0;
+            }
+
+            // Update total quizzes
+            const quizzesCard = document.getElementById('totalQuizzes');
+            if (quizzesCard) {
+                quizzesCard.textContent = totalQuizzes || 0;
+            }
+
+            // Update class average
+            const avgCard = document.getElementById('classAverage');
+            if (avgCard) {
+                avgCard.textContent = (classAverage || 0) + '%';
+            }
+
+            // Update students needing attention
+            const attentionCard = document.getElementById('needAttention');
+            if (attentionCard) {
+                attentionCard.textContent = needsAttention || 0;
+            }
+        }
+
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        }
+
+        function displayQuizResultsFromDynamoDB(quizResults) {
+            const container = document.getElementById('quizResultsContainer');
+            if (!container) return;
+
+            // Sort by most recent first
+            const sortedQuizzes = [...quizResults].sort((a, b) => {
+                return new Date(b.submittedAt) - new Date(a.submittedAt);
+            });
+
+            container.innerHTML = `
+                <table class="table" style="width: 100%;">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 0.75rem;">Student</th>
+                            <th style="padding: 0.75rem;">Subject</th>
+                            <th style="padding: 0.75rem;">Topic</th>
+                            <th style="padding: 0.75rem;">Score</th>
+                            <th style="padding: 0.75rem;">Percentage</th>
+                            <th style="padding: 0.75rem;">Status</th>
+                            <th style="padding: 0.75rem;">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedQuizzes.map(quiz => {
+                            const date = new Date(quiz.submittedAt);
+                            const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                            const percentage = parseFloat(quiz.percentage);
+                            const scoreColor = percentage >= 70 ? 'var(--success-color)' : (percentage >= 60 ? 'var(--warning-color)' : 'var(--danger-color)');
+                            const status = quiz.passed ? 'Passed' : 'Failed';
+                            const statusColor = quiz.passed ? 'var(--success-color)' : 'var(--danger-color)';
+                            // Use studentName if available, otherwise fall back to studentId
+                            const studentDisplay = quiz.studentName || quiz.studentId;
+
+                            return `
+                                <tr style="border-bottom: 1px solid #ecf0f1;">
+                                    <td style="padding: 0.75rem;"><strong>${studentDisplay}</strong></td>
+                                    <td style="padding: 0.75rem;">${quiz.subject}</td>
+                                    <td style="padding: 0.75rem;">${quiz.topic}</td>
+                                    <td style="padding: 0.75rem;">${quiz.score}</td>
+                                    <td style="padding: 0.75rem;"><strong style="color: ${scoreColor};">${percentage}%</strong></td>
+                                    <td style="padding: 0.75rem;"><span style="color: ${statusColor};">${status}</span></td>
+                                    <td style="padding: 0.75rem;">${formattedDate}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function updateStatsFromDynamoDB(statistics) {
+            // Update total students
+            const studentsCard = document.getElementById('totalStudents');
+            if (studentsCard) {
+                studentsCard.textContent = statistics.totalStudents || 0;
+            }
+
+            // Update total quizzes
+            const quizzesCard = document.getElementById('totalQuizzes');
+            if (quizzesCard) {
+                quizzesCard.textContent = statistics.totalQuizzes || 0;
+            }
+
+            // Update class average
+            const avgCard = document.getElementById('classAverage');
+            if (avgCard) {
+                avgCard.textContent = (statistics.averageScore || 0) + '%';
+            }
+
+            // Update students needing attention (< 70% average)
+            const attentionCard = document.getElementById('needAttention');
+            if (attentionCard) {
+                // Calculate from pass rate
+                const failRate = 100 - (statistics.passRate || 0);
+                const needingAttention = Math.round((failRate / 100) * (statistics.totalStudents || 0));
+                attentionCard.textContent = needingAttention;
+            }
+        }
+
+        function updateChartsFromDynamoDB(quizResults, statistics) {
+            console.log('Processing DynamoDB data for student stats...');
+
+            // Group quizzes by student
+            const studentQuizzes = {};
+            const studentStats = {};
+
+            quizResults.forEach(quiz => {
+                const studentKey = quiz.studentId || 'Unknown';
+                if (!studentQuizzes[studentKey]) {
+                    studentQuizzes[studentKey] = [];
+                }
+                studentQuizzes[studentKey].push(quiz);
+            });
+
+            // Calculate stats for each student
+            Object.keys(studentQuizzes).forEach(studentKey => {
+                const quizzes = studentQuizzes[studentKey];
+
+                // Calculate total score (need to parse the score from DynamoDB format)
+                let totalPercentage = 0;
+                let validQuizzes = 0;
+
+                quizzes.forEach(quiz => {
+                    // Parse percentage from quiz
+                    let percentage = 0;
+                    if (quiz.percentage !== undefined) {
+                        percentage = parseFloat(quiz.percentage);
+                    } else if (quiz.correctAnswers && quiz.totalQuestions) {
+                        percentage = (parseInt(quiz.correctAnswers) / parseInt(quiz.totalQuestions)) * 100;
+                    }
+
+                    if (!isNaN(percentage)) {
+                        totalPercentage += percentage;
+                        validQuizzes++;
+                    }
+                });
+
+                const averageScore = validQuizzes > 0 ? Math.round(totalPercentage / validQuizzes) : 0;
+
+                // Get student name
+                const studentName = quizzes[0].studentName || studentKey;
+
+                // Get most recent quiz date
+                const dates = quizzes.map(q => new Date(q.submittedAt || q.timestamp || Date.now()));
+                const lastActive = new Date(Math.max(...dates));
+
+                // Determine difficulty
+                let difficulty = 'medium';
+                let difficultyClass = 'difficulty-medium';
+                if (averageScore >= 80) {
+                    difficulty = 'hard';
+                    difficultyClass = 'difficulty-hard';
+                } else if (averageScore < 60) {
+                    difficulty = 'easy';
+                    difficultyClass = 'difficulty-easy';
+                }
+
+                studentStats[studentKey] = {
+                    name: studentName,
+                    quizzesTaken: validQuizzes,
+                    averageScore: averageScore,
+                    difficulty: difficulty,
+                    difficultyClass: difficultyClass,
+                    lastActive: lastActive,
+                    needsAttention: averageScore < 70
+                };
+            });
+
+            console.log('Calculated student stats:', studentStats);
+
+            // Update "All Students - Performance Summary" table
+            const allStudentsTable = document.getElementById('allStudentsTableBody');
+            if (allStudentsTable) {
+                if (Object.keys(studentStats).length === 0) {
+                    allStudentsTable.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                                No student data available yet.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    allStudentsTable.innerHTML = Object.values(studentStats).map(student => {
+                        const scoreColor = student.averageScore >= 70 ? 'var(--success-color)' :
+                                         (student.averageScore >= 60 ? 'var(--warning-color)' : 'var(--danger-color)');
+                        const timeAgo = getTimeAgo(student.lastActive);
+
+                        return `
+                            <tr>
+                                <td><strong>${student.name}</strong></td>
+                                <td>0</td>
+                                <td>${student.quizzesTaken}</td>
+                                <td><span style="color: ${scoreColor};">${student.averageScore}%</span></td>
+                                <td><span class="difficulty-badge ${student.difficultyClass}">${student.difficulty.charAt(0).toUpperCase() + student.difficulty.slice(1)}</span></td>
+                                <td>${timeAgo}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+
+            // Update "Students Requiring Attention" table
+            const attentionTable = document.getElementById('attentionTableBody');
+            if (attentionTable) {
+                const studentsNeedingAttention = Object.values(studentStats).filter(s => s.needsAttention);
+
+                console.log('Students Needing Attention (DynamoDB):', studentsNeedingAttention);
+
+                if (studentsNeedingAttention.length === 0) {
+                    const hasAnyStudents = Object.keys(studentStats).length > 0;
+                    const message = hasAnyStudents
+                        ? 'No students requiring attention. Great job!'
+                        : 'No student data available yet. Students will appear here when they complete quizzes.';
+
+                    attentionTable.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: #95a5a6;">
+                                ${message}
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    attentionTable.innerHTML = studentsNeedingAttention.map(student => {
+                        const scoreColor = student.averageScore >= 60 ? 'var(--warning-color)' : 'var(--danger-color)';
+                        const status = student.averageScore < 50 ? 'Struggling' : 'Needs Review';
+                        const statusColor = student.averageScore < 50 ? 'var(--danger-color)' : 'var(--warning-color)';
+                        const timeAgo = getTimeAgo(student.lastActive);
+
+                        return `
+                            <tr>
+                                <td><strong>${student.name}</strong></td>
+                                <td><span style="color: ${scoreColor};">${student.averageScore}%</span></td>
+                                <td><span class="difficulty-badge ${student.difficultyClass}">${student.difficulty.charAt(0).toUpperCase() + student.difficulty.slice(1)}</span></td>
+                                <td>0 times</td>
+                                <td>${timeAgo}</td>
+                                <td><span style="color: ${statusColor};">${status}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            }
+        }
+
+        // Make displayQuizResults callable from button
+        function displayQuizResults() {
+            loadStudentDataFromDynamoDB();
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, calling loadStudentDataFromDynamoDB...');
+            try {
+                loadStudentDataFromDynamoDB();
+            } catch (error) {
+                console.error('Error loading student data:', error);
+                alert('Error loading student data. Check console for details.');
             }
         });
     </script>

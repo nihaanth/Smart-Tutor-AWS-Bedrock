@@ -19,7 +19,7 @@ s3_client = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
 
 # Configuration
-CLAUDE_MODEL_ID = 'anthropic.claude-3-sonnet-20240229-v1'
+CLAUDE_MODEL_ID = 'anthropic.claude-3-sonnet-20240229-v1:0'
 S3_BUCKET = os.environ.get('SMARTTUTOR_BUCKET', 'smarttutor-content')
 LESSON_PLANS_TABLE = os.environ.get('LESSON_PLANS_TABLE', 'SmartTutor-LessonPlans')
 
@@ -53,24 +53,35 @@ def lambda_handler(event, context):
 
         teacher_id = body.get('teacherId', 'teacher_001')
         class_id = body.get('classId', 'class_8A')
-        subject = body.get('subject', 'Biology')
+
+        # Support both single subject and multi-subject plans
+        subjects = body.get('subjects', [])
+        if not subjects:
+            # Fall back to single subject if subjects array not provided
+            subject = body.get('subject', 'Biology')
+            subjects = [subject]
+
         week_start = body.get('weekStartDate', datetime.now().strftime('%Y-%m-%d'))
         student_data = body.get('studentData', get_default_student_data())
 
-        print(f"Generating lesson plan for {teacher_id}, class {class_id}, subject {subject}")
+        print(f"Generating lesson plan for {teacher_id}, class {class_id}")
+        print(f"Subjects: {', '.join(subjects)}")
+        print(f"Weak topics: {student_data.get('weakTopics', [])}")
 
         # Generate lesson plan using Bedrock
         lesson_plan = generate_lesson_plan_with_bedrock(
-            subject=subject,
+            subjects=subjects,
             week_start_date=week_start,
             student_data=student_data
         )
 
         # Store lesson plan to S3 and DynamoDB
+        # Use primary subject for storage (first in list)
+        primary_subject = subjects[0] if subjects else 'General'
         plan_id = store_lesson_plan(
             teacher_id=teacher_id,
             class_id=class_id,
-            subject=subject,
+            subject=primary_subject,
             lesson_plan=lesson_plan,
             week_start=week_start
         )
@@ -111,20 +122,59 @@ def lambda_handler(event, context):
         }
 
 
-def generate_lesson_plan_with_bedrock(subject: str, week_start_date: str, student_data: Dict) -> Dict:
+def generate_lesson_plan_with_bedrock(subjects: List[str], week_start_date: str, student_data: Dict) -> Dict:
     """
     Generate weekly lesson plan using Amazon Bedrock Claude 3 Sonnet
+    Supports both single-subject and multi-subject plans
     """
 
     # Calculate week dates
     week_start = datetime.strptime(week_start_date, '%Y-%m-%d')
     week_days = [(week_start + timedelta(days=i)).strftime('%A, %B %d') for i in range(5)]
 
+    # Determine if multi-subject or single-subject plan
+    is_multi_subject = len(subjects) > 1
+    subjects_str = ', '.join(subjects) if is_multi_subject else subjects[0]
+
+    # Extract subject-specific performance if available
+    subject_performance = student_data.get('subjectPerformance', {})
+    performance_details = ""
+    if subject_performance:
+        performance_details = "\n- Subject Performance Breakdown:"
+        for subj, avg in subject_performance.items():
+            performance_details += f"\n  * {subj}: {avg}%"
+
     # Build prompt for Claude 3 Sonnet
-    prompt = f"""You are an expert educational planner creating a weekly lesson plan for a {subject} class.
+    if is_multi_subject:
+        subject_context = f"""You are an expert educational planner creating a cross-curricular weekly lesson plan addressing multiple subject areas where students are struggling.
 
 **Class Context:**
-- Subject: {subject}
+- Subjects Requiring Attention: {subjects_str}
+- Week: {week_days[0]} - {week_days[4]}
+- Total Students: {student_data['totalStudents']}
+- Overall Average Performance: {student_data['averagePerformance']}%{performance_details}
+- Weak Topics Identified (Priority Order): {', '.join(student_data['weakTopics'])}
+- Difficulty Distribution:
+  - Easy Level: {student_data['difficultyDistribution']['easy']} students
+  - Medium Level: {student_data['difficultyDistribution']['medium']} students
+  - Hard Level: {student_data['difficultyDistribution']['hard']} students
+
+**Task:**
+Generate a structured 5-day lesson plan that:
+1. PRIORITIZES the weakest topics listed above (address lowest-performing subjects first)
+2. Creates an integrated approach connecting concepts across subjects when possible
+3. Dedicates appropriate time to each subject based on performance
+4. Provides differentiated instruction for the three difficulty levels
+5. Includes specific learning objectives for each day
+6. Suggests hands-on activities and assessment methods
+7. Builds progressively throughout the week
+
+**Important:** Focus most heavily on the subjects/topics with lowest performance. The weak topics are listed in priority order."""
+    else:
+        subject_context = f"""You are an expert educational planner creating a weekly lesson plan for a {subjects_str} class.
+
+**Class Context:**
+- Subject: {subjects_str}
 - Week: {week_days[0]} - {week_days[4]}
 - Total Students: {student_data['totalStudents']}
 - Average Performance: {student_data['averagePerformance']}%
@@ -140,7 +190,9 @@ Generate a structured 5-day lesson plan that:
 2. Provides differentiated instruction for the three difficulty levels
 3. Includes specific learning objectives for each day
 4. Suggests hands-on activities and assessment methods
-5. Builds progressively throughout the week
+5. Builds progressively throughout the week"""
+
+    prompt = f"""{subject_context}
 
 **Output Format (JSON):**
 Return a valid JSON object with this exact structure:
@@ -212,7 +264,9 @@ Generate the complete 5-day lesson plan now."""
         lesson_plan = json.loads(json_text)
 
         # Add metadata
-        lesson_plan['subject'] = subject
+        lesson_plan['subject'] = subjects_str  # For display purposes
+        lesson_plan['subjects'] = subjects  # Array of all subjects
+        lesson_plan['isMultiSubject'] = is_multi_subject
         lesson_plan['weekStartDate'] = week_start_date
         lesson_plan['studentContext'] = student_data
         lesson_plan['generatedBy'] = 'Claude 3 Sonnet via Amazon Bedrock'
@@ -223,7 +277,7 @@ Generate the complete 5-day lesson plan now."""
     except Exception as e:
         print(f"Bedrock API error: {str(e)}")
         # Return fallback plan if Bedrock fails
-        return generate_fallback_lesson_plan(subject, week_start_date, week_days, student_data)
+        return generate_fallback_lesson_plan(subjects, week_start_date, week_days, student_data)
 
 
 def store_lesson_plan(teacher_id: str, class_id: str, subject: str, lesson_plan: Dict, week_start: str) -> str:
@@ -278,13 +332,18 @@ def store_lesson_plan(teacher_id: str, class_id: str, subject: str, lesson_plan:
         raise
 
 
-def generate_fallback_lesson_plan(subject: str, week_start_date: str, week_days: List[str], student_data: Dict) -> Dict:
+def generate_fallback_lesson_plan(subjects: List[str], week_start_date: str, week_days: List[str], student_data: Dict) -> Dict:
     """
     Generate a fallback lesson plan if Bedrock is unavailable
     """
 
+    subjects_str = ', '.join(subjects) if len(subjects) > 1 else subjects[0]
+    is_multi_subject = len(subjects) > 1
+
+    subject_context = f"multiple subjects ({subjects_str})" if is_multi_subject else subjects_str
+
     return {
-        "weekOverview": f"This week in {subject}, students will review key concepts and address weak areas identified in recent assessments.",
+        "weekOverview": f"This week in {subject_context}, students will review key concepts and address weak areas identified in recent assessments.",
         "weeklyGoals": [
             f"Strengthen understanding of {student_data['weakTopics'][0] if student_data['weakTopics'] else 'core concepts'}",
             "Build confidence through differentiated practice",
@@ -294,7 +353,7 @@ def generate_fallback_lesson_plan(subject: str, week_start_date: str, week_days:
             {
                 "day": "Monday",
                 "date": week_days[0],
-                "topic": f"Introduction to {student_data['weakTopics'][0] if student_data['weakTopics'] else subject}",
+                "topic": f"Introduction to {student_data['weakTopics'][0] if student_data['weakTopics'] else subject_context}",
                 "learningObjectives": [
                     "Review prerequisite knowledge",
                     "Introduce new concepts with scaffolding"
@@ -405,7 +464,9 @@ def generate_fallback_lesson_plan(subject: str, week_start_date: str, week_days:
             "Assessment templates"
         ],
         "notes": f"Focus on addressing weak topic: {student_data['weakTopics'][0] if student_data['weakTopics'] else 'N/A'}. Provide extra support for {student_data['difficultyDistribution']['easy']} students at easy level.",
-        "subject": subject,
+        "subject": subjects_str,
+        "subjects": subjects,
+        "isMultiSubject": is_multi_subject,
         "weekStartDate": week_start_date,
         "studentContext": student_data,
         "generatedBy": "Fallback Template",

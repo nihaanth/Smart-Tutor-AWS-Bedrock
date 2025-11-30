@@ -10,67 +10,67 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand">
-            <span>🎓</span>
-            <span>SmartTutor</span>
+            <span style="font-weight: 700; font-size: 1.2rem;">SmartTutor</span>
+            <span style="margin-left: 0.5rem; opacity: 0.7; font-size: 0.9rem;">| AI Tutor</span>
         </div>
         <div class="navbar-user">
-            <span>Welcome, John Doe</span>
-            <div class="user-avatar">JD</div>
+            <span id="welcomeMessage">Welcome, Student</span>
+            <div class="user-avatar" id="userAvatar">S</div>
         </div>
     </nav>
 
     <!-- Main Container -->
     <div class="container">
         <!-- Page Header -->
-        <div class="card" style="background: linear-gradient(135deg, #8E44AD, #9B59B6); color: white; margin-bottom: 1rem;">
-            <h2 style="margin-bottom: 0.5rem;">💬 AI Chat Tutor</h2>
-            <p style="margin: 0; opacity: 0.9;">Ask me anything about your lessons! I'm here to help 24/7.</p>
+        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 1rem;">
+            <h2 style="margin-bottom: 0.5rem; font-weight: 600;">AI Chat Tutor</h2>
+            <p style="margin: 0; opacity: 0.95;">Ask questions and get instant explanations from our AI-powered assistant</p>
         </div>
 
         <!-- Info Alert -->
         <div class="alert alert-info">
-            <strong>🤖 Powered by Amazon Bedrock:</strong> This AI tutor uses Claude 3 Sonnet to provide personalized explanations.
-            The difficulty level automatically adjusts based on your confusion signals.
+            <strong>Powered by Amazon Bedrock:</strong> This AI tutor uses Claude 3 Sonnet to provide personalized explanations.
+            The difficulty level automatically adjusts based on your understanding.
         </div>
 
         <!-- Current Status -->
-        <div class="card" style="background: rgba(74, 144, 226, 0.1); padding: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="card" style="background: #f8f9fa; padding: 1rem; border-left: 4px solid #667eea;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <div>
-                    <strong>Current Topic:</strong> Photosynthesis
+                    <strong>Current Topic:</strong> <span style="color: #667eea;">Photosynthesis</span>
                 </div>
                 <div>
                     <strong>Difficulty:</strong> <span class="difficulty-badge difficulty-medium" id="currentDifficulty">Medium</span>
                 </div>
                 <div>
-                    <strong>Confusion Signals:</strong> <span id="confusionCount">0</span>/3
+                    <strong>Confusion Signals:</strong> <span id="confusionCount" style="font-weight: 600;">0</span>/3
                 </div>
             </div>
         </div>
 
         <!-- Chat Container -->
         <div class="chat-container">
-            <div class="chat-header">
-                🤖 SmartTutor AI Assistant
+            <div class="chat-header" style="background: #667eea; font-weight: 600;">
+                SmartTutor AI Assistant
             </div>
 
             <div class="chat-messages" id="chatMessages">
                 <!-- Initial tutor message -->
                 <div class="message message-tutor">
                     Hello! I'm your AI tutor. I'm here to help you understand any concepts you're learning about.
-                    Ask me anything about photosynthesis, or any other topic you're studying! 😊
+                    Ask me anything about photosynthesis, or any other topic you're studying.
                 </div>
             </div>
 
             <div class="chat-input-container">
-                <input type="text" id="chatInput" class="chat-input" placeholder="Ask me anything..." onkeypress="handleKeyPress(event)">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type your question here..." onkeypress="handleKeyPress(event)">
                 <button onclick="sendMessage()" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Send</button>
             </div>
         </div>
 
         <!-- Quick Questions -->
         <div class="card" style="margin-top: 1.5rem;">
-            <div class="card-header">💡 Quick Questions (Click to Ask)</div>
+            <div class="card-header" style="background: #f8f9fa; font-weight: 600; border-bottom: 2px solid #e9ecef;">Suggested Questions</div>
             <div class="card-body">
                 <div class="grid grid-2">
                     <button onclick="askQuickQuestion('What is photosynthesis?')" class="btn btn-secondary">
@@ -91,11 +91,20 @@
 
         <!-- Back Button -->
         <div style="text-align: center; margin-top: 2rem;">
-            <a href="../student-dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+            <a href="../student-dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
         </div>
     </div>
 
     <script>
+        // Update student name from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentName = localStorage.getItem('studentName') || 'Student';
+            document.getElementById('welcomeMessage').textContent = 'Welcome, ' + studentName;
+
+            const avatar = document.getElementById('userAvatar');
+            avatar.textContent = studentName.charAt(0).toUpperCase();
+        });
+
         let confusionCount = 0;
         let currentDifficulty = 'medium';
         let messageCount = 0;
@@ -121,10 +130,10 @@
         const mockResponses = {
             easy: {
                 default: "Let me explain that in a very simple way. ",
-                photosynthesis: "Photosynthesis is how plants make their food! Think of it like cooking - plants use sunlight like a stove, water and air like ingredients, and they create sugar (food) and oxygen. The green color in leaves (chlorophyll) is like the pot that catches the sunlight! 🌱☀️",
-                oxygen: "Great question! When plants make their food during photosynthesis, they use some parts of water but don't need all the oxygen. So they release that extra oxygen into the air - that's the oxygen we breathe! It's like when you're cooking and have leftover ingredients. 🌬️",
-                green: "Leaves are green because they have a special substance called chlorophyll. Chlorophyll acts like sunglasses that only let green light through - so that's the color we see! All the other colors get absorbed and used for making food. 🟢",
-                chlorophyll: "Chlorophyll is the green stuff in leaves. Think of it like a solar panel - it catches sunlight and turns it into energy that plants can use. That's why it's so important for photosynthesis! 🔋"
+                photosynthesis: "Photosynthesis is how plants make their food! Think of it like cooking - plants use sunlight like a stove, water and air like ingredients, and they create sugar (food) and oxygen. The green color in leaves (chlorophyll) is like the pot that catches the sunlight!",
+                oxygen: "Great question! When plants make their food during photosynthesis, they use some parts of water but don't need all the oxygen. So they release that extra oxygen into the air - that's the oxygen we breathe! It's like when you're cooking and have leftover ingredients.",
+                green: "Leaves are green because they have a special substance called chlorophyll. Chlorophyll acts like sunglasses that only let green light through - so that's the color we see! All the other colors get absorbed and used for making food.",
+                chlorophyll: "Chlorophyll is the green stuff in leaves. Think of it like a solar panel - it catches sunlight and turns it into energy that plants can use. That's why it's so important for photosynthesis!"
             },
             medium: {
                 default: "That's a good question. Let me explain: ",
@@ -137,7 +146,7 @@
                 default: "That's an excellent advanced question. ",
                 photosynthesis: "Photosynthesis involves two distinct stages: light-dependent reactions occurring in the thylakoid membranes, and light-independent reactions (Calvin cycle) in the stroma. The light-dependent reactions involve photosystems I and II, which create a proton gradient that drives ATP synthesis via chemiosmosis. The Calvin cycle fixes CO₂ through the enzyme RuBisCO, producing G3P which is converted to glucose through gluconeogenesis.",
                 oxygen: "Oxygen evolution occurs during Photosystem II when the oxygen-evolving complex catalyzes the oxidation of two water molecules. This releases four electrons (which replenish P680+), four protons (contributing to the proton gradient), and molecular oxygen. This process is manganese-dependent and occurs on the lumenal side of the thylakoid membrane.",
-                green: "The green coloration is due to chlorophyll's conjugated pi-electron system in its porphyrin ring structure. This allows for specific absorption spectra with peaks in the blue (∼430-450nm) and red (∼640-680nm) regions, while reflecting green wavelengths (∼500-570nm). This selective absorption maximizes photon capture efficiency for photosynthetic electron transport.",
+                green: "The green coloration is due to chlorophyll's conjugated pi-electron system in its porphyrin ring structure. This allows for specific absorption spectra with peaks in the blue (~430-450nm) and red (~640-680nm) regions, while reflecting green wavelengths (~500-570nm). This selective absorption maximizes photon capture efficiency for photosynthetic electron transport.",
                 chlorophyll: "Chlorophyll molecules consist of a tetrapyrrole ring with a central Mg²⁺ ion and a hydrophobic phytol tail. In the photosystem complexes, chlorophyll exists as both core pigments (P680, P700) and antenna complexes. Energy transfer occurs through Förster resonance energy transfer (FRET) until it reaches the reaction center where charge separation occurs."
             }
         };
@@ -219,7 +228,7 @@
             messageDiv.className = `message message-${sender}`;
 
             if (isSystem) {
-                messageDiv.style.background = '#F39C12';
+                messageDiv.style.background = '#f39c12';
                 messageDiv.style.color = 'white';
             }
 

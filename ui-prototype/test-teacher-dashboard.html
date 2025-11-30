@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard Debugger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4a90e2;
+            padding-bottom: 10px;
+        }
+        pre {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .danger {
+            background: #e74c3c;
+        }
+        .danger:hover {
+            background: #c0392b;
+        }
+        .success {
+            background: #27ae60;
+        }
+        .success:hover {
+            background: #229954;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #4a90e2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teacher Dashboard Debugger</h1>
+
+    <div class="section">
+        <h2>Current Data Status</h2>
+        <div id="dataStatus"></div>
+    </div>
+
+    <div class="section">
+        <h2>Quiz History</h2>
+        <div id="quizHistory"></div>
+    </div>
+
+    <div class="section">
+        <h2>All Students Registry</h2>
+        <div id="studentsRegistry"></div>
+    </div>
+
+    <div class="section">
+        <h2>Calculated Student Stats</h2>
+        <div id="studentStats"></div>
+    </div>
+
+    <div class="section">
+        <h2>Actions</h2>
+        <button onclick="refreshData()">🔄 Refresh Data</button>
+        <button onclick="addTestData()" class="success">➕ Add Test Data</button>
+        <button onclick="clearAllData()" class="danger">🗑️ Clear All Data</button>
+        <button onclick="window.location.href='pages/teacher-dashboard.html'">📊 Open Teacher Dashboard</button>
+    </div>
+
+    <script>
+        function refreshData() {
+            displayDataStatus();
+            displayQuizHistory();
+            displayStudentsRegistry();
+            displayStudentStats();
+        }
+
+        function displayDataStatus() {
+            const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+            const allStudents = JSON.parse(localStorage.getItem('allStudents') || '{}');
+
+            const statusHTML = `
+                <p><strong>Total Quizzes:</strong> ${quizHistory.length}</p>
+                <p><strong>Registered Students:</strong> ${Object.keys(allStudents).length}</p>
+                <p><strong>Status:</strong> ${quizHistory.length > 0 ? '✅ Data Found' : '❌ No Data'}</p>
+            `;
+
+            document.getElementById('dataStatus').innerHTML = statusHTML;
+        }
+
+        function displayQuizHistory() {
+            const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+
+            if (quizHistory.length === 0) {
+                document.getElementById('quizHistory').innerHTML = '<p>No quiz history found.</p>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Student</th><th>Subject</th><th>Score</th><th>%</th><th>Date</th></tr></thead><tbody>';
+
+            quizHistory.forEach(quiz => {
+                const studentName = quiz.studentName || quiz.studentId || 'Unknown';
+                const date = new Date(quiz.date).toLocaleString();
+                html += `
+                    <tr>
+                        <td>${studentName}</td>
+                        <td>${quiz.subject}</td>
+                        <td>${quiz.score}/${quiz.total}</td>
+                        <td>${quiz.percentage}%</td>
+                        <td>${date}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('quizHistory').innerHTML = html;
+        }
+
+        function displayStudentsRegistry() {
+            const allStudents = JSON.parse(localStorage.getItem('allStudents') || '{}');
+
+            if (Object.keys(allStudents).length === 0) {
+                document.getElementById('studentsRegistry').innerHTML = '<p>No students registered yet.</p>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Student ID</th><th>Name</th><th>Created</th><th>Last Login</th></tr></thead><tbody>';
+
+            for (let id in allStudents) {
+                const student = allStudents[id];
+                html += `
+                    <tr>
+                        <td><code>${id}</code></td>
+                        <td>${student.name}</td>
+                        <td>${new Date(student.createdAt).toLocaleString()}</td>
+                        <td>${new Date(student.lastLogin).toLocaleString()}</td>
+                    </tr>
+                `;
+            }
+
+            html += '</tbody></table>';
+            document.getElementById('studentsRegistry').innerHTML = html;
+        }
+
+        function displayStudentStats() {
+            const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+            const studentQuizzes = {};
+
+            // Group by student
+            quizHistory.forEach(quiz => {
+                const key = quiz.studentId || quiz.studentName || 'Unknown';
+                if (!studentQuizzes[key]) {
+                    studentQuizzes[key] = [];
+                }
+                studentQuizzes[key].push(quiz);
+            });
+
+            if (Object.keys(studentQuizzes).length === 0) {
+                document.getElementById('studentStats').innerHTML = '<p>No student data to calculate.</p>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Student</th><th>Quizzes</th><th>Avg Score</th><th>Needs Attention?</th></tr></thead><tbody>';
+
+            for (let key in studentQuizzes) {
+                const quizzes = studentQuizzes[key];
+                const totalScore = quizzes.reduce((sum, q) => sum + q.percentage, 0);
+                const avgScore = Math.round(totalScore / quizzes.length);
+                const needsAttention = avgScore < 70;
+                const studentName = quizzes[0].studentName || key;
+
+                const statusStyle = needsAttention ? 'color: red; font-weight: bold;' : 'color: green;';
+
+                html += `
+                    <tr>
+                        <td>${studentName}</td>
+                        <td>${quizzes.length}</td>
+                        <td>${avgScore}%</td>
+                        <td style="${statusStyle}">${needsAttention ? '⚠️ YES' : '✅ NO'}</td>
+                    </tr>
+                `;
+            }
+
+            html += '</tbody></table>';
+            document.getElementById('studentStats').innerHTML = html;
+        }
+
+        function addTestData() {
+            const timestamp = Date.now();
+
+            // Create test students
+            const allStudents = JSON.parse(localStorage.getItem('allStudents') || '{}');
+
+            const student1Id = 'student_alice_' + timestamp;
+            const student2Id = 'student_bob_' + timestamp;
+            const student3Id = 'student_charlie_' + timestamp;
+
+            allStudents[student1Id] = {
+                name: 'Alice',
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            };
+
+            allStudents[student2Id] = {
+                name: 'Bob',
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            };
+
+            allStudents[student3Id] = {
+                name: 'Charlie',
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            };
+
+            localStorage.setItem('allStudents', JSON.stringify(allStudents));
+
+            // Create test quiz results
+            const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+
+            // Alice - Low scores (needs attention)
+            quizHistory.push({
+                studentId: student1Id,
+                studentName: 'Alice',
+                subject: 'Biology',
+                topic: 'Photosynthesis',
+                score: 2,
+                total: 5,
+                percentage: 40,
+                passed: false,
+                difficulty: 'easy',
+                date: new Date().toISOString(),
+                timestamp: timestamp
+            });
+
+            quizHistory.push({
+                studentId: student1Id,
+                studentName: 'Alice',
+                subject: 'Math',
+                topic: 'Fractions',
+                score: 3,
+                total: 5,
+                percentage: 60,
+                passed: false,
+                difficulty: 'medium',
+                date: new Date().toISOString(),
+                timestamp: timestamp + 1000
+            });
+
+            // Bob - High scores (doesn't need attention)
+            quizHistory.push({
+                studentId: student2Id,
+                studentName: 'Bob',
+                subject: 'Science',
+                topic: 'Water Cycle',
+                score: 5,
+                total: 5,
+                percentage: 100,
+                passed: true,
+                difficulty: 'hard',
+                date: new Date().toISOString(),
+                timestamp: timestamp + 2000
+            });
+
+            // Charlie - Medium scores (needs attention)
+            quizHistory.push({
+                studentId: student3Id,
+                studentName: 'Charlie',
+                subject: 'History',
+                topic: 'American Revolution',
+                score: 3,
+                total: 5,
+                percentage: 60,
+                passed: false,
+                difficulty: 'medium',
+                date: new Date().toISOString(),
+                timestamp: timestamp + 3000
+            });
+
+            localStorage.setItem('quizHistory', JSON.stringify(quizHistory));
+
+            alert('✅ Test data added! Refresh to see the results.');
+            refreshData();
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ Are you sure you want to clear ALL data? This cannot be undone!')) {
+                localStorage.removeItem('quizHistory');
+                localStorage.removeItem('allStudents');
+                localStorage.removeItem('studentName');
+                localStorage.removeItem('studentId');
+                alert('🗑️ All data cleared!');
+                refreshData();
+            }
+        }
+
+        // Load data on page load
+        window.addEventListener('DOMContentLoaded', refreshData);
+    </script>
+</body>
+</html>

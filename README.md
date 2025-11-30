@@ -4,7 +4,7 @@
 
 Team: Shravya Reddy Mamidi, Varnith Reddy Dubbaka, Sai Sathwika Devu
 
-***
+---
 
 ## Project Overview
 
@@ -18,7 +18,7 @@ SmartTutor is an AI-powered adaptive learning platform that uses **Amazon Bedroc
 - **Teacher Analytics**: Real-time insights and AI-generated lesson plans
 - **Difficulty Adaptation**: Automatic adjustment based on performance
 
-***
+---
 
 ## Solution Asset Components
 
@@ -146,7 +146,7 @@ Comprehensive project documentation:
 - **Adaptive**: Real-time difficulty adjustment based on performance
 - **Analytics-Driven**: OpenSearch for insights and weak topic detection
 
-***
+---
 
 ## Setup Instructions
 
@@ -199,7 +199,7 @@ python -m http.server 8000
 # Then visit: http://localhost:8000
 ```
 
-***
+---
 
 ## Repository Structure
 
@@ -255,7 +255,7 @@ smarttutor-solution-asset/
 
 **Total**: 31 files | 4,000+ lines of code | 300+ pages of documentation
 
-***
+---
 
 ## Demo Video
 
@@ -266,7 +266,7 @@ A comprehensive 7-minute demonstration video is available showing:
 
 **Video Link:** [Upload to YouTube and add link here]
 
-***
+---
 
 ## Testing the Solution
 
@@ -292,7 +292,7 @@ python adaptive_difficulty_demo.py
 ```
 Expected: Shows difficulty adjustments based on various scenarios
 
-***
+---
 
 ## Key GenAI Features Demonstrated
 
@@ -321,7 +321,7 @@ Expected: Shows difficulty adjustments based on various scenarios
 - Detailed explanations for complex topics
 - Optimizes cost and latency
 
-***
+---
 
 ## Performance Metrics
 
@@ -333,7 +333,7 @@ Expected: Shows difficulty adjustments based on various scenarios
 | Teacher Time Saved    | > 5hrs/wk | 6.5hrs/wk |
 | Quiz Auto-Grade Acc.  | > 95%     | 98%       |
 
-***
+---
 
 ## Technologies Used
 
@@ -357,7 +357,7 @@ Expected: Shows difficulty adjustments based on various scenarios
 - boto3
 - Git/GitHub
 
-***
+---
 
 ## Future Enhancements
 
@@ -369,7 +369,7 @@ Potential v2.0 features:
 5. Fine-tuned Models
 6. LMS Integration (Canvas, Blackboard, Moodle)
 
-***
+---
 
 ## Project Deliverables
 
@@ -384,7 +384,7 @@ Potential v2.0 features:
    - Demo video
    - This README documentation
 
-***
+---
 
 ## Team Contributions
 
@@ -392,7 +392,7 @@ Potential v2.0 features:
 - Varnith Reddy Dubbaka - UI/UX design, frontend development, testing
 - Sai Sathwika Devu - Adaptive difficulty logic, analytics, teacher dashboard
 
-***
+---
 
 ## Contact
 
@@ -403,16 +403,16 @@ For questions or feedback:
 
 **Course:** COT6930 Generative Intelligence and Software Development Lifecycles  
 **Instructor:** Dr. Fernando Koch  
-**Institution:** Florida Atlantic University  
+**Institution:** Florida Atlantic University
 **Semester:** Fall 2025
 
-***
+---
 
 ## License
 
 This project was created for academic purposes as part of COT6930 coursework.
 
-***
+---
 
 ## Acknowledgments
 
@@ -422,5 +422,4 @@ This project was created for academic purposes as part of COT6930 coursework.
 - Meta
 - FAU
 
-***
-
+---

@@ -5,125 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartTutor - Student Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand">
-            <span>🎓</span>
             <span>SmartTutor</span>
         </div>
         <div class="navbar-user">
-            <span>Welcome, Rahul</span>
-            <div class="user-avatar">JD</div>
+            <span id="welcomeMessage">Welcome, Student</span>
+            <div class="user-avatar" id="userAvatar">S</div>
         </div>
     </nav>
 
     <!-- Main Container -->
     <div class="container">
         <!-- Current Difficulty Alert -->
-        <div class="alert alert-info">
+        <div class="alert alert-info" id="difficultyAlert" style="display: none;">
             <strong>Current Difficulty Level:</strong>
-            <span class="difficulty-badge difficulty-medium">Medium</span>
+            <span class="difficulty-badge difficulty-medium" id="currentDifficulty">Medium</span>
             <p style="margin-top: 0.5rem;">Your lessons are customized based on your performance. Keep up the good work!</p>
         </div>
 
         <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value">12</div>
-                <div class="stat-label">Lessons Completed</div>
+                <div class="stat-value" id="lessonsCompleted">0</div>
+                <div class="stat-label">Lessons Viewed</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">85%</div>
+                <div class="stat-value" id="averageScore">0%</div>
                 <div class="stat-label">Average Quiz Score</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">8</div>
+                <div class="stat-value" id="quizzesTaken">0</div>
                 <div class="stat-label">Quizzes Taken</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">24</div>
-                <div class="stat-label">Questions Asked</div>
+                <div class="stat-value" id="questionsAsked">0</div>
+                <div class="stat-label">Questions Asked (Chat)</div>
             </div>
         </div>
 
         <!-- Current Progress -->
         <div class="card">
-            <div class="card-header">📈 Your Learning Progress</div>
+            <div class="card-header">Your Learning Progress</div>
             <div class="card-body">
-                <h4>Biology - Photosynthesis Unit</h4>
-                <div style="margin: 1rem 0;">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 75%;">75% Complete</div>
-                    </div>
+                <h4 style="margin-bottom: 1.5rem;">Your Quiz Performance Over Time</h4>
+                <canvas id="progressChart" style="max-height: 300px; display: none;"></canvas>
+                <div id="emptyProgressMessage" style="text-align: center; padding: 3rem 2rem; color: #7f8c8d;">
+                    <h3 style="color: #34495e; margin-bottom: 0.5rem;">Start Your Learning Journey!</h3>
+                    <p style="margin: 0;">Take your first quiz to see your progress here.</p>
                 </div>
-                <p>You're doing great! 3 more lessons to complete this unit.</p>
             </div>
         </div>
 
         <!-- Available Topics -->
         <div class="card">
-            <div class="card-header">📚 Choose Your Learning Topic</div>
+            <div class="card-header">Choose Your Learning Topic</div>
             <div class="card-body">
                 <div class="grid grid-3">
                     <!-- Biology Topic -->
-                    <div class="topic-card" onclick="selectTopic('Biology', 'Photosynthesis')">
-                        <div class="topic-icon">🧬</div>
+                    <div class="topic-card" onclick="selectTopic('Biology', 'Photosynthesis')" data-subject="Biology">
                         <h3>Biology</h3>
-                        <p>Continue: Photosynthesis</p>
-                        <div style="margin-top: 1rem;">
-                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        <p class="topic-status">Start: Photosynthesis</p>
+                        <div style="margin-top: 1rem;" class="difficulty-container">
+                            <!-- Difficulty will be set dynamically -->
                         </div>
                     </div>
 
                     <!-- Mathematics Topic -->
-                    <div class="topic-card" onclick="selectTopic('Mathematics', 'Fractions & Decimals')">
-                        <div class="topic-icon">📐</div>
+                    <div class="topic-card" onclick="selectTopic('Mathematics', 'Fractions & Decimals')" data-subject="Mathematics">
                         <h3>Mathematics</h3>
-                        <p>Next: Fractions & Decimals</p>
-                        <div style="margin-top: 1rem;">
-                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        <p class="topic-status">Start: Fractions & Decimals</p>
+                        <div style="margin-top: 1rem;" class="difficulty-container">
+                            <!-- Difficulty will be set dynamically -->
                         </div>
                     </div>
 
                     <!-- Science Topic -->
-                    <div class="topic-card" onclick="selectTopic('Science', 'The Water Cycle')">
-                        <div class="topic-icon">🌍</div>
+                    <div class="topic-card" onclick="selectTopic('Science', 'The Water Cycle')" data-subject="Science">
                         <h3>Science</h3>
-                        <p>Start: The Water Cycle</p>
-                        <div style="margin-top: 1rem;">
-                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        <p class="topic-status">Start: The Water Cycle</p>
+                        <div style="margin-top: 1rem;" class="difficulty-container">
+                            <!-- Difficulty will be set dynamically -->
                         </div>
                     </div>
 
                     <!-- History Topic -->
-                    <div class="topic-card" onclick="selectTopic('History', 'American Revolution')">
-                        <div class="topic-icon">📜</div>
+                    <div class="topic-card" onclick="selectTopic('History', 'American Revolution')" data-subject="History">
                         <h3>History</h3>
-                        <p>Review: American Revolution</p>
-                        <div style="margin-top: 1rem;">
-                            <span class="difficulty-badge difficulty-hard">Hard</span>
+                        <p class="topic-status">Start: American Revolution</p>
+                        <div style="margin-top: 1rem;" class="difficulty-container">
+                            <!-- Difficulty will be set dynamically -->
                         </div>
                     </div>
 
                     <!-- English Topic -->
-                    <div class="topic-card" onclick="selectTopic('English', 'Grammar Basics')">
-                        <div class="topic-icon">📖</div>
+                    <div class="topic-card" onclick="selectTopic('English', 'Grammar Basics')" data-subject="English">
                         <h3>English</h3>
-                        <p>Practice: Grammar Basics</p>
-                        <div style="margin-top: 1rem;">
-                            <span class="difficulty-badge difficulty-easy">Easy</span>
+                        <p class="topic-status">Start: Grammar Basics</p>
+                        <div style="margin-top: 1rem;" class="difficulty-container">
+                            <!-- Difficulty will be set dynamically -->
                         </div>
                     </div>
 
                     <!-- Chemistry Topic -->
-                    <div class="topic-card" onclick="selectTopic('Chemistry', 'Atoms & Molecules')">
-                        <div class="topic-icon">⚗️</div>
+                    <div class="topic-card" onclick="selectTopic('Chemistry', 'Atoms & Molecules')" data-subject="Chemistry">
                         <h3>Chemistry</h3>
-                        <p>Begin: Atoms & Molecules</p>
-                        <div style="margin-top: 1rem;">
-                            <span class="difficulty-badge difficulty-medium">Medium</span>
+                        <p class="topic-status">Start: Atoms & Molecules</p>
+                        <div style="margin-top: 1rem;" class="difficulty-container">
+                            <!-- Difficulty will be set dynamically -->
                         </div>
                     </div>
                 </div>
@@ -132,57 +125,327 @@
 
         <!-- Recent Activity -->
         <div class="card">
-            <div class="card-header">🕒 Recent Activity</div>
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Recent Activity</span>
+                <span style="font-size: 0.9rem; font-weight: normal; opacity: 0.8;">Last 7 days</span>
+            </div>
             <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Activity</th>
-                            <th>Topic</th>
-                            <th>Score</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>📝 Quiz Completed</td>
-                            <td>Photosynthesis</td>
-                            <td><strong style="color: var(--success-color);">4/5 (80%)</strong></td>
-                            <td>Nov 22, 2025</td>
-                        </tr>
-                        <tr>
-                            <td>📖 Lesson Viewed</td>
-                            <td>Cell Structure</td>
-                            <td>-</td>
-                            <td>Nov 21, 2025</td>
-                        </tr>
-                        <tr>
-                            <td>💬 Chat Session</td>
-                            <td>Photosynthesis</td>
-                            <td>8 questions</td>
-                            <td>Nov 20, 2025</td>
-                        </tr>
-                        <tr>
-                            <td>📝 Quiz Completed</td>
-                            <td>Cell Division</td>
-                            <td><strong style="color: var(--warning-color);">3/5 (60%)</strong></td>
-                            <td>Nov 19, 2025</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Activity Chart -->
+                <div style="margin-bottom: 2rem; display: none;" id="activityChartSection">
+                    <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #34495e;">Weekly Activity Summary</h4>
+                    <canvas id="activityChart" style="max-height: 200px;"></canvas>
+                </div>
+
+                <!-- Activity Table -->
+                <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #34495e;" id="activityTableHeader">Detailed Activity Log</h4>
+                <div style="overflow-x: auto;">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8f9fa;">
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Activity</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Topic</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Score</th>
+                                <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #dee2e6;">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 3rem; color: #95a5a6;">
+                                    <p style="margin: 0;">No activity yet. Start learning to see your history here!</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <div class="grid grid-2" style="margin-top: 2rem;">
-            <a href="pages/chat-tutor.html" class="btn btn-primary" style="padding: 2rem; font-size: 1.2rem;">
-                💬 Ask AI Tutor a Question
-            </a>
-            <a href="pages/quiz.html" class="btn btn-success" style="padding: 2rem; font-size: 1.2rem;">
-                📝 Take Practice Quiz
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="pages/chat-tutor.html" class="btn btn-primary" style="padding: 2rem; font-size: 1.2rem; display: inline-block; min-width: 300px;">
+                Ask AI Tutor a Question
             </a>
         </div>
     </div>
+
+    <!-- Progress Chart Script -->
+    <script>
+        // Initialize student name and check first visit
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentName = localStorage.getItem('studentName') || 'Student';
+
+            // Update welcome message
+            document.getElementById('welcomeMessage').textContent = 'Welcome, ' + studentName;
+
+            // Update avatar with first letter of name
+            const avatar = document.getElementById('userAvatar');
+            avatar.textContent = studentName.charAt(0).toUpperCase();
+
+            // Load and display quiz data
+            loadStudentData();
+
+            // Load subject difficulty levels
+            loadSubjectDifficulties();
+        });
+
+        // Load subject-specific difficulty levels
+        function loadSubjectDifficulties() {
+            const studentId = localStorage.getItem('studentId');
+            const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+
+            // Calculate difficulty per subject based on quiz history
+            const subjectStats = {};
+
+            quizHistory.forEach(quiz => {
+                if (!subjectStats[quiz.subject]) {
+                    subjectStats[quiz.subject] = {
+                        totalQuizzes: 0,
+                        totalScore: 0,
+                        lastDifficulty: 'medium'
+                    };
+                }
+
+                subjectStats[quiz.subject].totalQuizzes++;
+                subjectStats[quiz.subject].totalScore += quiz.percentage;
+                subjectStats[quiz.subject].lastDifficulty = quiz.difficulty || 'medium';
+            });
+
+            // Update each topic card
+            const topicCards = document.querySelectorAll('.topic-card');
+            topicCards.forEach(card => {
+                const subject = card.getAttribute('data-subject');
+                const difficultyContainer = card.querySelector('.difficulty-container');
+                const statusText = card.querySelector('.topic-status');
+
+                if (subjectStats[subject]) {
+                    // Existing student - show their difficulty
+                    const avgScore = subjectStats[subject].totalScore / subjectStats[subject].totalQuizzes;
+                    let difficulty = 'medium';
+                    let difficultyClass = 'difficulty-medium';
+
+                    if (avgScore >= 80) {
+                        difficulty = 'hard';
+                        difficultyClass = 'difficulty-hard';
+                    } else if (avgScore < 60) {
+                        difficulty = 'easy';
+                        difficultyClass = 'difficulty-easy';
+                    }
+
+                    difficultyContainer.innerHTML = `<span class="difficulty-badge ${difficultyClass}">${difficulty.toUpperCase()}</span>`;
+                    statusText.textContent = `Continue: ${statusText.textContent.split(': ')[1]}`;
+                } else {
+                    // New student - hide difficulty badge, show "Start"
+                    difficultyContainer.innerHTML = '<span style="color: #6366f1; font-weight: 600; font-size: 0.9rem;">New Topic</span>';
+                    statusText.textContent = `Start: ${statusText.textContent.split(': ')[1]}`;
+                }
+            });
+        }
+
+        async function loadStudentData() {
+            const studentId = localStorage.getItem('studentId');
+
+            if (studentId) {
+                // Fetch from DynamoDB first
+                try {
+                    console.log('Fetching quiz history from DynamoDB for student:', studentId);
+
+                    const response = await makeAPIRequest(
+                        API_CONFIG.ROUTES.GET_QUIZ_RESULTS + `?studentId=${studentId}&limit=50`,
+                        'GET'
+                    );
+
+                    console.log('DynamoDB Response:', response);
+
+                    if (response.success && response.results && response.results.length > 0) {
+                        // Convert DynamoDB format to local format
+                        const quizHistory = response.results.map(quiz => ({
+                            studentName: quiz.studentId,
+                            subject: quiz.subject,
+                            topic: quiz.topic,
+                            score: parseInt(quiz.correctAnswers),
+                            total: parseInt(quiz.totalQuestions),
+                            percentage: parseFloat(quiz.percentage),
+                            passed: quiz.passed,
+                            difficulty: quiz.difficulty || 'medium',
+                            date: quiz.submittedAt,
+                            timestamp: new Date(quiz.submittedAt).getTime()
+                        }));
+
+                        console.log('Loaded', quizHistory.length, 'quizzes from DynamoDB');
+
+                        // Update localStorage cache
+                        localStorage.setItem('quizHistory', JSON.stringify(quizHistory));
+
+                        // Display data
+                        displayStudentData(quizHistory);
+                        return;
+                    } else {
+                        console.log('No quizzes in DynamoDB, checking localStorage');
+                    }
+                } catch (error) {
+                    console.error('Error fetching from DynamoDB:', error);
+                    console.log('Falling back to localStorage');
+                }
+            }
+
+            // Fallback to localStorage
+            const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+
+            if (quizHistory.length === 0) {
+                // Show empty state
+                showEmptyState();
+            } else {
+                // Display actual data
+                displayStudentData(quizHistory);
+            }
+        }
+
+        function showEmptyState() {
+            // Stats are already set to 0 in HTML
+            // Charts are already hidden
+            // Empty messages are already shown
+
+            // Hide difficulty alert for new students
+            const difficultyAlert = document.getElementById('difficultyAlert');
+            if (difficultyAlert) {
+                difficultyAlert.style.display = 'none';
+            }
+        }
+
+        function displayStudentData(quizHistory) {
+            // Calculate stats
+            const quizzesTaken = quizHistory.length;
+            const totalScore = quizHistory.reduce((sum, quiz) => sum + quiz.percentage, 0);
+            const averageScore = Math.round(totalScore / quizzesTaken);
+
+            // Update stats
+            document.getElementById('lessonsCompleted').textContent = '0'; // We're not tracking lessons yet
+            document.getElementById('averageScore').textContent = averageScore + '%';
+            document.getElementById('quizzesTaken').textContent = quizzesTaken;
+            document.getElementById('questionsAsked').textContent = '0'; // We're not tracking chat yet
+
+            // Calculate and show current difficulty level
+            let currentDifficulty = 'medium';
+            let difficultyClass = 'difficulty-medium';
+            let difficultyMessage = 'Keep practicing to improve!';
+
+            if (averageScore >= 80) {
+                currentDifficulty = 'hard';
+                difficultyClass = 'difficulty-hard';
+                difficultyMessage = 'Excellent work! You\'re ready for advanced challenges.';
+            } else if (averageScore >= 60) {
+                currentDifficulty = 'medium';
+                difficultyClass = 'difficulty-medium';
+                difficultyMessage = 'Good progress! Keep practicing to master the material.';
+            } else {
+                currentDifficulty = 'easy';
+                difficultyClass = 'difficulty-easy';
+                difficultyMessage = 'Let\'s build your foundation with easier questions first.';
+            }
+
+            // Show difficulty alert with calculated level
+            const difficultyAlert = document.getElementById('difficultyAlert');
+            if (difficultyAlert) {
+                difficultyAlert.style.display = 'block';
+                const difficultyBadge = difficultyAlert.querySelector('.difficulty-badge');
+                if (difficultyBadge) {
+                    difficultyBadge.className = `difficulty-badge ${difficultyClass}`;
+                    difficultyBadge.textContent = currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1);
+                }
+                const messageP = difficultyAlert.querySelector('p');
+                if (messageP) {
+                    messageP.textContent = `${difficultyMessage} Your next quiz will be at ${currentDifficulty} level.`;
+                }
+            }
+
+            // Display progress chart
+            displayProgressChart(quizHistory);
+
+            // Display activity table
+            displayActivityTable(quizHistory);
+        }
+
+        function displayProgressChart(quizHistory) {
+            // Show chart, hide empty message
+            const progressChart = document.getElementById('progressChart');
+            const emptyMessage = document.getElementById('emptyProgressMessage');
+
+            if (progressChart) progressChart.style.display = 'block';
+            if (emptyMessage) emptyMessage.style.display = 'none';
+
+            // Create chart
+            const ctx = progressChart.getContext('2d');
+
+            // Prepare data
+            const labels = quizHistory.map((quiz, index) => `Quiz ${index + 1}`);
+            const data = quizHistory.map(quiz => quiz.percentage);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Quiz Score (%)',
+                        data: data,
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        function displayActivityTable(quizHistory) {
+            // Sort by most recent first
+            const sortedHistory = [...quizHistory].reverse();
+
+            const activityTable = document.querySelector('.table tbody');
+            if (activityTable) {
+                activityTable.innerHTML = sortedHistory.map(quiz => {
+                    const date = new Date(quiz.date);
+                    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                    const scoreColor = quiz.percentage >= 70 ? '#27ae60' : (quiz.percentage >= 60 ? '#f39c12' : '#e74c3c');
+
+                    // Get difficulty badge
+                    const difficulty = quiz.difficulty || 'medium';
+                    const difficultyText = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+                    const difficultyBadge = `<span class="difficulty-badge difficulty-${difficulty}">${difficultyText}</span>`;
+
+                    return `
+                        <tr style="border-bottom: 1px solid #ecf0f1;">
+                            <td style="padding: 0.75rem;">Quiz Completed ${difficultyBadge}</td>
+                            <td style="padding: 0.75rem;">${quiz.topic}</td>
+                            <td style="padding: 0.75rem;"><strong style="color: ${scoreColor};">${quiz.score}/${quiz.total} (${quiz.percentage}%)</strong></td>
+                            <td style="padding: 0.75rem; color: #7f8c8d;">${formattedDate}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+    </script>
 
     <!-- Load API Configuration and Student Dashboard Integration -->
     <script src="js/api-config.js"></script>

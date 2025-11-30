@@ -8,6 +8,40 @@ let currentQuiz = null;
 let studentAnswers = [];
 
 /**
+ * Calculate student's current difficulty level based on quiz history
+ */
+function calculateStudentDifficulty() {
+    const quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+
+    if (quizHistory.length === 0) {
+        console.log('No quiz history, starting at easy difficulty');
+        return 'easy'; // Start new students at easy level
+    }
+
+    // Calculate average score from recent quizzes (last 3 or all if less than 3)
+    const recentQuizzes = quizHistory.slice(-3);
+    const totalScore = recentQuizzes.reduce((sum, quiz) => sum + quiz.percentage, 0);
+    const averageScore = totalScore / recentQuizzes.length;
+
+    console.log(`Average score from last ${recentQuizzes.length} quizzes: ${averageScore}%`);
+
+    // Determine difficulty based on performance
+    let difficulty;
+    if (averageScore >= 80) {
+        difficulty = 'hard';
+        console.log('Student performing well (≥80%) → Hard difficulty');
+    } else if (averageScore >= 60) {
+        difficulty = 'medium';
+        console.log('Student performing adequately (60-79%) → Medium difficulty');
+    } else {
+        difficulty = 'easy';
+        console.log('Student needs support (<60%) → Easy difficulty');
+    }
+
+    return difficulty;
+}
+
+/**
  * Initialize quiz page - Generate quiz from backend
  */
 async function initializeQuiz() {
@@ -16,6 +50,13 @@ async function initializeQuiz() {
     const subject = urlParams.get('subject') || 'Biology';
 
     console.log('Initializing quiz for:', { topic, subject });
+
+    // Calculate student's current difficulty based on performance
+    const studentDifficulty = calculateStudentDifficulty();
+    console.log('Using difficulty level:', studentDifficulty);
+
+    // Update action button links
+    updateActionButtons(topic, subject);
 
     // Show loading state
     const quizContainer = document.getElementById('quizForm');
@@ -27,7 +68,7 @@ async function initializeQuiz() {
     `;
 
     try {
-        // Call quiz generation API
+        // Call quiz generation API with calculated difficulty
         const response = await makeAPIRequest(
             API_CONFIG.ROUTES.GENERATE_QUIZ,
             'POST',
@@ -35,7 +76,7 @@ async function initializeQuiz() {
                 studentId: STUDENT_DATA.studentId,
                 subject: subject,
                 topic: topic,
-                difficulty: STUDENT_DATA.currentDifficulty,
+                difficulty: studentDifficulty, // Use calculated difficulty instead of hardcoded
                 questionCount: 5
             }
         );
@@ -73,10 +114,13 @@ async function initializeQuiz() {
 function displayQuiz(quiz) {
     const quizContainer = document.getElementById('quizForm');
 
-    // Update quiz header
+    // Update quiz header with difficulty badge
+    const difficultyText = quiz.difficulty ? quiz.difficulty.charAt(0).toUpperCase() + quiz.difficulty.slice(1) : 'Medium';
+    const difficultyClass = `difficulty-${quiz.difficulty || 'medium'}`;
+
     document.querySelector('.card h2').textContent = `📝 ${quiz.topic} Quiz`;
-    document.querySelector('.card p').textContent =
-        `${quiz.questions.length} Questions | AI-Generated at ${quiz.difficulty || 'Medium'} Level`;
+    document.querySelector('.card p').innerHTML =
+        `${quiz.questions.length} Questions | <span class="difficulty-badge ${difficultyClass}">${difficultyText} Level</span> (Adapted to your performance)`;
 
     // Generate question HTML
     const questionsHTML = quiz.questions.map((q, index) => {
@@ -168,6 +212,7 @@ async function submitQuiz() {
             'POST',
             {
                 studentId: STUDENT_DATA.studentId,
+                studentName: STUDENT_DATA.name,  // Include student name
                 quizId: currentQuiz.quizId,
                 subject: currentQuiz.subject,
                 topic: currentQuiz.topic,
@@ -207,6 +252,9 @@ async function submitQuiz() {
  */
 function displayResults(result) {
     const { correctAnswers, totalQuestions, percentage, answers, passed } = result;
+
+    // Save quiz result to localStorage
+    saveQuizResult(result);
 
     // Update score display
     document.getElementById('scoreCircle').textContent = `${correctAnswers}/${totalQuestions}`;
@@ -268,6 +316,76 @@ function displayResults(result) {
     }).join('');
 
     document.getElementById('detailedResults').innerHTML = detailedResultsHTML;
+}
+
+/**
+ * Update action button links based on current topic/subject
+ */
+function updateActionButtons(topic, subject) {
+    const reviewLessonBtn = document.getElementById('reviewLessonBtn');
+    const askQuestionsBtn = document.getElementById('askQuestionsBtn');
+
+    if (reviewLessonBtn) {
+        reviewLessonBtn.href = `lesson.html?topic=${encodeURIComponent(topic)}&subject=${encodeURIComponent(subject)}`;
+    }
+
+    if (askQuestionsBtn) {
+        askQuestionsBtn.href = `chat-tutor.html?topic=${encodeURIComponent(topic)}&subject=${encodeURIComponent(subject)}`;
+    }
+}
+
+/**
+ * Save quiz result to localStorage
+ */
+function saveQuizResult(result) {
+    console.log('saveQuizResult called with:', result);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const topic = urlParams.get('topic') || 'General';
+    const subject = urlParams.get('subject') || 'Biology';
+
+    console.log('Topic:', topic, 'Subject:', subject);
+
+    // Get student name from localStorage
+    const studentName = localStorage.getItem('studentName') || 'Anonymous';
+    console.log('Student name:', studentName);
+
+    // Get existing quiz history from localStorage
+    let quizHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+    console.log('Existing quiz history:', quizHistory);
+
+    // Get the difficulty level from the current quiz
+    const difficulty = currentQuiz?.difficulty || 'medium';
+
+    // Create quiz record with student name
+    const quizRecord = {
+        studentName: studentName, // Save the actual student name
+        subject: subject,
+        topic: topic,
+        score: result.correctAnswers,
+        total: result.totalQuestions,
+        percentage: result.percentage,
+        passed: result.passed,
+        difficulty: difficulty, // Save the difficulty level
+        date: new Date().toISOString(),
+        timestamp: Date.now()
+    };
+
+    console.log('Created quiz record:', quizRecord);
+
+    // Add to history
+    quizHistory.push(quizRecord);
+
+    // Keep only last 20 quizzes
+    if (quizHistory.length > 20) {
+        quizHistory = quizHistory.slice(-20);
+    }
+
+    // Save back to localStorage
+    localStorage.setItem('quizHistory', JSON.stringify(quizHistory));
+
+    console.log('Quiz result saved to localStorage. Total quizzes:', quizHistory.length);
+    console.log('Updated quiz history:', quizHistory);
 }
 
 // Initialize quiz when page loads

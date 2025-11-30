@@ -40,6 +40,7 @@ def lambda_handler(event, context):
 
         # Extract parameters
         student_id = body.get('studentId', 'student_001')
+        student_name = body.get('studentName', 'Anonymous')  # Get student name
         quiz_id = body.get('quizId')
         subject = body.get('subject')
         topic = body.get('topic')
@@ -96,6 +97,7 @@ def lambda_handler(event, context):
             Item={
                 'resultId': result_id,
                 'studentId': student_id,
+                'studentName': student_name,  # Save student name
                 'quizId': quiz_id,
                 'subject': subject,
                 'topic': topic,

@@ -93,7 +93,7 @@ async function regenerateLessonPlan() {
         showLoadingState();
 
         // Gather current class data
-        const requestData = gatherClassData();
+        const requestData = await gatherClassData();
 
         console.log('Requesting lesson plan generation:', requestData);
 
@@ -140,26 +140,153 @@ async function regenerateLessonPlan() {
 /**
  * Gather current class data for lesson plan generation
  */
-function gatherClassData() {
-    // In a real application, this would fetch actual class data
-    // For now, using sample data that matches the dashboard display
+async function gatherClassData() {
+    console.log('Gathering actual class data from quiz results...');
 
-    return {
-        teacherId: 'teacher_001',
-        classId: 'class_8A',
-        subject: 'Biology',  // Could be dynamic based on dropdown
-        weekStartDate: getNextMonday(),
-        studentData: {
-            totalStudents: 25,
-            weakTopics: ['Photosynthesis', 'Cell Division', 'Genetics'],
-            averagePerformance: 72.5,
-            difficultyDistribution: {
-                easy: 8,
-                medium: 12,
-                hard: 5
-            }
+    try {
+        // Fetch quiz results from API
+        const response = await makeAPIRequest(
+            API_CONFIG.ROUTES.GET_QUIZ_RESULTS + '?limit=100',
+            'GET'
+        );
+
+        if (response.success && response.results) {
+            const quizResults = response.results;
+            const studentStats = {};
+            const subjectPerformance = {};
+
+            // Group by student and analyze
+            quizResults.forEach(quiz => {
+                const studentId = quiz.studentId;
+                const subject = quiz.subject;
+
+                // Track per student
+                if (!studentStats[studentId]) {
+                    studentStats[studentId] = {
+                        name: quiz.studentName || studentId,
+                        scores: []
+                    };
+                }
+
+                // Calculate percentage
+                let percentage = 0;
+                if (quiz.percentage !== undefined) {
+                    percentage = parseFloat(quiz.percentage);
+                } else if (quiz.correctAnswers && quiz.totalQuestions) {
+                    percentage = (parseInt(quiz.correctAnswers) / parseInt(quiz.totalQuestions)) * 100;
+                }
+
+                studentStats[studentId].scores.push(percentage);
+
+                // Track per subject
+                if (!subjectPerformance[subject]) {
+                    subjectPerformance[subject] = {
+                        total: 0,
+                        count: 0,
+                        topics: {}
+                    };
+                }
+
+                subjectPerformance[subject].total += percentage;
+                subjectPerformance[subject].count++;
+
+                // Track topics
+                const topic = quiz.topic;
+                if (!subjectPerformance[subject].topics[topic]) {
+                    subjectPerformance[subject].topics[topic] = {
+                        total: 0,
+                        count: 0
+                    };
+                }
+                subjectPerformance[subject].topics[topic].total += percentage;
+                subjectPerformance[subject].topics[topic].count++;
+            });
+
+            // Calculate averages and find weak topics
+            const weakTopics = [];
+            const subjectAverages = {};
+
+            Object.keys(subjectPerformance).forEach(subject => {
+                const subjData = subjectPerformance[subject];
+                const avgScore = subjData.total / subjData.count;
+                subjectAverages[subject] = Math.round(avgScore);
+
+                // Find weak topics in this subject (< 70%)
+                Object.keys(subjData.topics).forEach(topic => {
+                    const topicData = subjData.topics[topic];
+                    const topicAvg = topicData.total / topicData.count;
+
+                    if (topicAvg < 70) {
+                        weakTopics.push({
+                            subject: subject,
+                            topic: topic,
+                            average: Math.round(topicAvg)
+                        });
+                    }
+                });
+            });
+
+            // Sort weak topics by score (lowest first)
+            weakTopics.sort((a, b) => a.average - b.average);
+
+            // Calculate difficulty distribution
+            const difficultyDist = { easy: 0, medium: 0, hard: 0 };
+            Object.values(studentStats).forEach(student => {
+                const avg = student.scores.reduce((a, b) => a + b, 0) / student.scores.length;
+                if (avg < 60) difficultyDist.easy++;
+                else if (avg < 80) difficultyDist.medium++;
+                else difficultyDist.hard++;
+            });
+
+            // Calculate overall average
+            const allScores = Object.values(studentStats).flatMap(s => s.scores);
+            const overallAvg = allScores.reduce((a, b) => a + b, 0) / allScores.length;
+
+            console.log('Analyzed Class Data:', {
+                students: Object.keys(studentStats).length,
+                subjects: Object.keys(subjectPerformance),
+                weakTopics: weakTopics.slice(0, 5),
+                subjectAverages: subjectAverages
+            });
+
+            return {
+                teacherId: 'teacher_001',
+                classId: 'class_8A',
+                subjects: Object.keys(subjectPerformance),
+                weekStartDate: getNextMonday(),
+                studentData: {
+                    totalStudents: Object.keys(studentStats).length,
+                    weakTopics: weakTopics.slice(0, 5).map(t => `${t.subject}: ${t.topic} (${t.average}%)`),
+                    averagePerformance: Math.round(overallAvg),
+                    difficultyDistribution: difficultyDist,
+                    subjectPerformance: subjectAverages
+                }
+            };
+
+        } else {
+            throw new Error('No quiz data available');
         }
-    };
+
+    } catch (error) {
+        console.error('❌ ERROR gathering class data:', error);
+        console.error('Error details:', error.message, error.stack);
+        alert('⚠️ Warning: Using fallback data for lesson plan. Check console for errors.');
+
+        // Fallback to sample data
+        console.warn('Using fallback data - lesson plan may not reflect actual class performance');
+        return {
+            teacherId: 'teacher_001',
+            classId: 'class_8A',
+            subjects: ['Biology', 'Math', 'Science'],
+            weekStartDate: getNextMonday(),
+            studentData: {
+                totalStudents: 6,
+                weakTopics: ['Multiple subjects showing low performance'],
+                averagePerformance: 37,
+                difficultyDistribution: { easy: 5, medium: 1, hard: 0 }
+            }
+        };
+    }
 }
 
 /**
@@ -662,9 +789,12 @@ async function displayQuizResults(containerId = 'quizResultsContainer') {
                 </tr>
             </thead>
             <tbody>
-                ${results.map(result => `
+                ${results.map(result => {
+                    // Use studentName if available, otherwise fall back to studentId
+                    const studentDisplay = result.studentName || result.studentId;
+                    return `
                     <tr>
-                        <td><strong>${result.studentId}</strong></td>
+                        <td><strong>${studentDisplay}</strong></td>
                         <td>${result.subject}</td>
                         <td>${result.topic}</td>
                         <td>${result.correctAnswers}/${result.totalQuestions}</td>
@@ -680,7 +810,8 @@ async function displayQuizResults(containerId = 'quizResultsContainer') {
                         </td>
                         <td>${new Date(result.submittedAt).toLocaleString()}</td>
                     </tr>
-                `).join('')}
+                `;
+                }).join('')}
             </tbody>
         </table>
     `;
