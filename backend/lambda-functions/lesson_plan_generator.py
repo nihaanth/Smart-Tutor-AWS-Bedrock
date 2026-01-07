@@ -19,7 +19,9 @@ s3_client = boto3.client('s3')
 dynamodb = boto3.resource('dynamodb')
 
 # Configuration
-CLAUDE_MODEL_ID = 'anthropic.claude-3-sonnet-20240229-v1:0'
+# Use inference profile instead of direct model ID (AWS Bedrock requirement)
+# Using Claude 3 Haiku - free tier, no marketplace permissions needed
+CLAUDE_MODEL_ID = 'us.anthropic.claude-3-haiku-20240307-v1:0'  # Claude 3 Haiku inference profile
 S3_BUCKET = os.environ.get('SMARTTUTOR_BUCKET', 'smarttutor-content')
 LESSON_PLANS_TABLE = os.environ.get('LESSON_PLANS_TABLE', 'SmartTutor-LessonPlans')
 
@@ -192,7 +194,21 @@ Generate a structured 5-day lesson plan that:
 4. Suggests hands-on activities and assessment methods
 5. Builds progressively throughout the week"""
 
-    prompt = f"""{subject_context}
+    # Add variation request to ensure different plans each time
+    variation_note = f"""
+
+**IMPORTANT - GENERATE A NEW AND DIFFERENT PLAN:**
+This is generation request at {datetime.now().isoformat()}.
+Please create a FRESH and UNIQUE lesson plan with:
+- Different activities than previous generations
+- Varied teaching approaches (lecture, group work, hands-on, technology integration, etc.)
+- Different assessment methods
+- Creative and engaging new examples
+- Mix of traditional and innovative teaching strategies
+
+DO NOT repeat the same generic activities. Be creative and specific!"""
+
+    prompt = f"""{subject_context}{variation_note}
 
 **Output Format (JSON):**
 Return a valid JSON object with this exact structure:
@@ -230,7 +246,7 @@ Generate the complete 5-day lesson plan now."""
     request_body = {
         "anthropic_version": "bedrock-2023-05-31",
         "max_tokens": 4000,
-        "temperature": 0.7,
+        "temperature": 0.9,  # Higher temperature for more variation between generations
         "messages": [
             {
                 "role": "user",
@@ -269,7 +285,7 @@ Generate the complete 5-day lesson plan now."""
         lesson_plan['isMultiSubject'] = is_multi_subject
         lesson_plan['weekStartDate'] = week_start_date
         lesson_plan['studentContext'] = student_data
-        lesson_plan['generatedBy'] = 'Claude 3 Sonnet via Amazon Bedrock'
+        lesson_plan['generatedBy'] = 'Claude 3 Haiku via Amazon Bedrock'
         lesson_plan['generatedAt'] = datetime.now().isoformat()
 
         return lesson_plan

@@ -71,5 +71,23 @@ Copy*
 Thumbs.db
 desktop.ini
 
-# Claude AI
-.claude/
+
+# Project specific - AWS images
+aws_images/
+*.png
+*.jpg
+*.jpeg
+
+# Exception: Allow screenshots and architecture diagram
+!screenshots/*.png
+!screenshots/*.jpg
+!image.png
+
+# Documentation (kept in parent docs folder)
+*.md
+!README.md
+!START.md
+
+# Deployment information
+backend/deployment-info.json
+backend/api_id.txt

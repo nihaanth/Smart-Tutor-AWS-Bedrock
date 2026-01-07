@@ -193,7 +193,7 @@ def demo_quiz_based_adjustment():
     ]
 
     for scenario in scenarios:
-        print(f"📝 {scenario['name']}")
+        print(f"{scenario['name']}")
         print(f"   Score: {scenario['score']}/{scenario['total']}")
 
         result = engine.update_from_quiz(scenario['score'], scenario['total'])
@@ -201,11 +201,11 @@ def demo_quiz_based_adjustment():
         print(f"   Percentage: {result['score_percentage']:.1f}%")
 
         if result['adjustment_made']:
-            print(f"   ⚡ DIFFICULTY ADJUSTED: {result['old_difficulty']} → {result['new_difficulty']}")
+            print(f"   DIFFICULTY ADJUSTED: {result['old_difficulty']} -> {result['new_difficulty']}")
         else:
-            print(f"   ✓ Difficulty maintained: {result['new_difficulty']}")
+            print(f"   Difficulty maintained: {result['new_difficulty']}")
 
-        print(f"   💬 {result['reason']}")
+        print(f"   {result['reason']}")
         print()
 
 
@@ -229,18 +229,18 @@ def demo_confusion_based_adjustment():
 
     for i, interaction in enumerate(interactions, 1):
         print(f"Interaction {i}:")
-        print(f"🧑 Student: {interaction['question']}")
+        print(f"Student: {interaction['question']}")
 
         result = engine.update_from_confusion(interaction['confused'])
 
         if interaction['confused']:
-            print(f"   ⚠️  Confusion detected!")
+            print(f"   Confusion detected!")
 
         if result['adjustment_made']:
-            print(f"   ⚡ DIFFICULTY ADJUSTED: {result['old_difficulty']} → {result['new_difficulty']}")
-            print(f"   💬 {result['reason']}")
+            print(f"   DIFFICULTY ADJUSTED: {result['old_difficulty']} -> {result['new_difficulty']}")
+            print(f"   {result['reason']}")
         else:
-            print(f"   ✓ Current: {result['new_difficulty']} - {result['reason']}")
+            print(f"   Current: {result['new_difficulty']} - {result['reason']}")
 
         print()
 
@@ -322,11 +322,11 @@ def demo_realtime_dashboard():
 
         # Recommendation for teacher
         if rec['average_score'] < 60:
-            print(f"   📊 Recommendation: Provide additional support and simplify content")
+            print(f"   Recommendation: Provide additional support and simplify content")
         elif rec['average_score'] > 85:
-            print(f"   📊 Recommendation: Challenge with advanced material")
+            print(f"   Recommendation: Challenge with advanced material")
         else:
-            print(f"   📊 Recommendation: Maintain current pace")
+            print(f"   Recommendation: Maintain current pace")
 
         print()
 
@@ -353,7 +353,7 @@ if __name__ == "__main__":
     demo_multi_factor_adjustment()
     demo_realtime_dashboard()
 
-    print("\n✅ Adaptive difficulty demonstration complete!")
+    print("\nAdaptive difficulty demonstration complete!")
     print("\nKey Insights:")
     print("• Difficulty adjusts automatically based on performance")
     print("• Multiple factors considered for personalization")

@@ -177,15 +177,24 @@ Generate the quiz now in JSON format:
             "top_p": 0.9
         }
 
-        print("Calling Amazon Bedrock (Llama 3 70B)...")
+        print("Calling Amazon Bedrock (Claude 3 Haiku - using for quiz generation)...")
+        # Using Claude 3 Haiku inference profile instead of Llama (simpler and works)
         response = bedrock_runtime.invoke_model(
-            modelId='meta.llama3-70b-instruct-v1:0',
-            body=json.dumps(request_body)
+            modelId='us.anthropic.claude-3-haiku-20240307-v1:0',
+            body=json.dumps({
+                "anthropic_version": "bedrock-2023-05-31",
+                "max_tokens": 4096,
+                "temperature": 0.7,
+                "messages": [{
+                    "role": "user",
+                    "content": prompt
+                }]
+            })
         )
 
-        # Parse response
+        # Parse response (Claude format)
         response_body = json.loads(response['body'].read())
-        generated_text = response_body.get('generation', '')
+        generated_text = response_body['content'][0]['text']
 
         # Extract JSON from response
         # Try to find JSON content
@@ -202,7 +211,7 @@ Generate the quiz now in JSON format:
             raise ValueError("No valid JSON found in response")
 
         # Add metadata
-        quiz_content['generatedBy'] = 'Llama 3 70B via Amazon Bedrock'
+        quiz_content['generatedBy'] = 'Claude 3 Haiku via Amazon Bedrock'
         quiz_content['generatedAt'] = datetime.utcnow().isoformat()
         quiz_content['subject'] = subject
         quiz_content['topic'] = topic
@@ -275,12 +284,29 @@ def generate_fallback_quiz(subject: str, topic: str, difficulty: str, num_questi
         ]
     }
 
-    questions = sample_questions.get(difficulty, sample_questions['medium']) * num_questions
-    questions = questions[:num_questions]
+    # Create diverse questions instead of repeating the same one
+    # base_questions = sample_questions.get(difficulty, sample_questions['medium'])
+    # questions = []
 
-    # Update question numbers
-    for i, q in enumerate(questions, 1):
-        q['questionNumber'] = i
+    # question_templates = [
+    #     (f"What is {topic}?", ["A biological process", "A chemical reaction", "A physical phenomenon", "None of the above"]),
+    #     (f"How does {topic} work?", ["Through multiple steps", "Through a single step", "It doesn't work", "Unknown process"]),
+    #     (f"Why is {topic} important?", ["It's fundamental", "It's optional", "It's not important", "Unknown importance"]),
+    #     (f"Where does {topic} occur?", ["In specific locations", "Everywhere", "Nowhere", "Unknown location"]),
+    #     (f"When was {topic} discovered?", ["Historical period", "Recently", "Never discovered", "Unknown time"])
+    # ]
+
+    # for i in range(num_questions):
+    #     q_text, options = question_templates[i % len(question_templates)]
+    #     questions.append({
+    #         "questionNumber": i + 1,
+    #         "question": q_text,
+    #         "options": options,
+    #         "correctAnswer": 0,
+    #         "explanation": f"{topic} is a fundamental concept in {subject}.",
+    #         "difficulty": difficulty,
+    #         "topic": topic
+    #     })
 
     return {
         "subject": subject,

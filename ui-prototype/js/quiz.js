@@ -77,7 +77,9 @@ async function initializeQuiz() {
                 subject: subject,
                 topic: topic,
                 difficulty: studentDifficulty, // Use calculated difficulty instead of hardcoded
-                questionCount: 5
+                questionCount: 5,
+                timestamp: Date.now(), // Add timestamp to prevent caching
+                requestId: `quiz_${Date.now()}_${Math.random()}` // Unique request ID
             }
         );
 

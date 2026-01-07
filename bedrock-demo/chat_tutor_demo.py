@@ -170,15 +170,15 @@ def demo_chat_tutoring():
     ]
 
     for question in conversation_1:
-        print(f"🧑 Student: {question}")
+        print(f"Student: {question}")
         response = tutor.chat(question, context="Photosynthesis lesson")
 
         if 'error' not in response:
-            print(f"🤖 Tutor: {response['response']}")
+            print(f"Tutor: {response['response']}")
             print(f"   [Difficulty: {response['current_difficulty']} | "
                   f"Confusion: {response['confusion_count']}]\n")
         else:
-            print(f"❌ Error: {response['error']}\n")
+            print(f"Error: {response['error']}\n")
 
     # Scenario 2: Student showing confusion
     print("\n" + "#" * 80)
@@ -195,13 +195,13 @@ def demo_chat_tutoring():
     ]
 
     for question in conversation_2:
-        print(f"🧑 Student: {question}")
+        print(f"Student: {question}")
         response = tutor.chat(question, context="Photosynthesis lesson")
 
         if 'error' not in response:
-            print(f"🤖 Tutor: {response['response']}")
+            print(f"Tutor: {response['response']}")
             if response['confusion_detected']:
-                print(f"   ⚠️  CONFUSION DETECTED!")
+                print(f"   CONFUSION DETECTED!")
             print(f"   [Difficulty adjusted to: {response['current_difficulty'].upper()} | "
                   f"Total confusion signals: {response['confusion_count']}]\n")
 
@@ -219,11 +219,11 @@ def demo_chat_tutoring():
     ]
 
     for question in conversation_3:
-        print(f"🧑 Student: {question}")
+        print(f"Student: {question}")
         response = tutor.chat(question)
 
         if 'error' not in response:
-            print(f"🤖 Tutor: {response['response'][:200]}...\n")
+            print(f"Tutor: {response['response'][:200]}...\n")
 
 
 def demo_with_mock_responses():
@@ -264,17 +264,17 @@ def demo_with_mock_responses():
 
     for i, scenario in enumerate(scenarios, 1):
         print(f"Exchange {i}:")
-        print(f"🧑 Student: {scenario['question']}")
+        print(f"Student: {scenario['question']}")
 
         # Detect confusion
         is_confused = mock_tutor._detect_confusion(scenario['question'])
         if is_confused:
             mock_tutor.confusion_count += 1
 
-        print(f"🤖 Tutor: {scenario['mock_response']}")
+        print(f"Tutor: {scenario['mock_response']}")
 
         if is_confused:
-            print(f"   ⚠️  Confusion detected! Adjusting explanation difficulty.")
+            print(f"   Confusion detected! Adjusting explanation difficulty.")
             mock_tutor.current_difficulty = "easy"
 
         print(f"   [Difficulty: {mock_tutor.current_difficulty} | "
@@ -304,21 +304,21 @@ def demo_confusion_detection():
 
     for phrase, expected in test_phrases:
         detected = tutor._detect_confusion(phrase)
-        status = "✓" if detected == expected else "✗"
-        indicator = "🔴 CONFUSED" if detected else "🟢 CLEAR"
+        status = "PASS" if detected == expected else "FAIL"
+        indicator = "CONFUSED" if detected else "CLEAR"
 
         print(f"{status} '{phrase}'")
-        print(f"   → {indicator}\n")
+        print(f"   -> {indicator}\n")
 
 
 if __name__ == "__main__":
     print("""
-    ⚠️  SETUP REQUIRED FOR LIVE DEMO:
+    SETUP REQUIRED FOR LIVE DEMO:
     1. Configure AWS credentials: aws configure
     2. Enable Amazon Bedrock access
     3. Request Claude 3 Sonnet model access
 
-    ℹ️  MOCK DEMOS: Run without AWS credentials
+    MOCK DEMOS: Run without AWS credentials
     """)
 
     print("\nRunning demonstration...\n")
@@ -330,4 +330,4 @@ if __name__ == "__main__":
     # Uncomment to run with AWS Bedrock:
     # demo_chat_tutoring()
 
-    print("\n✅ Chat tutor demonstration complete!")
+    print("\nChat tutor demonstration complete!")

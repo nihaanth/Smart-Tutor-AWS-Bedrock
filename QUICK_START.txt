@@ -1,0 +1,86 @@
+============================================
+  SMARTTUTOR PROJECT - QUICK START GUIDE
+============================================
+
+SERVER STATUS: RUNNING ✓
+URL: http://localhost:8000
+
+============================================
+  TAKE SCREENSHOTS NOW
+============================================
+
+Follow these steps to capture all screenshots:
+
+1. OPEN YOUR BROWSER
+   Go to: http://localhost:8000
+
+2. TAKE 10 SCREENSHOTS (see SCREENSHOT_GUIDE.md for details):
+
+   Frontend Screenshots (7):
+   -------------------------
+   ✓ 01-student-dashboard.png      → http://localhost:8000
+   ✓ 02-lesson-view.png            → http://localhost:8000/pages/lesson.html
+   ✓ 03-quiz-interface.png         → http://localhost:8000/pages/quiz.html
+   ✓ 04-quiz-results.png           → Complete a quiz first
+   ✓ 05-chat-tutor.png             → http://localhost:8000/pages/chat-tutor.html
+   ✓ 06-teacher-dashboard.png      → http://localhost:8000/pages/teacher-dashboard.html
+   ✓ 07-lesson-plan-generator.png  → Teacher dashboard page
+
+   AWS Screenshots (3) - Requires AWS Console:
+   -------------------------------------------
+   ✓ 08-aws-lambda.png             → AWS Console → Lambda
+   ✓ 09-aws-api-gateway.png        → AWS Console → API Gateway
+   ✓ 10-aws-dynamodb.png           → AWS Console → DynamoDB
+
+3. SAVE ALL SCREENSHOTS
+   Location: screenshots/ folder
+   Format: PNG or JPG
+   Size: Keep under 500KB each
+
+4. VERIFY IN README
+   The README.md is already updated with screenshot references.
+   Once you add the images, they will display automatically.
+
+============================================
+  FILES CREATED
+============================================
+
+✓ README.md              - Updated with Screenshots section
+✓ SCREENSHOT_GUIDE.md    - Detailed screenshot instructions
+✓ START_PROJECT.md       - How to start/stop the project
+✓ .gitignore             - Updated to allow screenshots
+✓ screenshots/           - Folder for your screenshots
+
+============================================
+  WHAT TO DO NEXT
+============================================
+
+STEP 1: Open http://localhost:8000 in your browser
+STEP 2: Navigate through each page and take screenshots
+STEP 3: Save screenshots to screenshots/ folder with exact names
+STEP 4: For AWS screenshots, login to AWS Console and capture them
+STEP 5: Check README.md to see all screenshots displayed
+
+============================================
+  STOPPING THE SERVER
+============================================
+
+When done taking screenshots:
+
+Option 1: Press Ctrl+C in the terminal
+Option 2: Run: kill $(lsof -ti:8000)
+
+============================================
+  IMPORTANT NOTES
+============================================
+
+• The UI works with mock data (no AWS deployment needed for screenshots)
+• Screenshots make your README professional and easy to understand
+• All screenshot references are already added to README.md
+• Just add the actual image files to the screenshots/ folder
+
+============================================
+
+Ready to take screenshots? Open your browser now!
+→ http://localhost:8000
+

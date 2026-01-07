@@ -19,7 +19,7 @@ const STUDENT_DATA = {
 
 // API Configuration
 const API_CONFIG = {
-     API_ENDPOINT: 'https://ojbjxbk9bg.execute-api.us-east-1.amazonaws.com/prod',
+     API_ENDPOINT: 'https://tla1r8guz5.execute-api.us-east-2.amazonaws.com/prod',
 
 
     // API Routes
@@ -65,9 +65,10 @@ async function makeAPIRequest(endpoint, method = 'POST', data = null, retries = 
     const options = {
         method: method,
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
-        mode: 'cors'
+        mode: 'cors',
+        cache: 'no-store'  // Prevent browser from caching responses
     };
 
     if (data && (method === 'POST' || method === 'PUT')) {

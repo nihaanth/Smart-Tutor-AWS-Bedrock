@@ -192,17 +192,17 @@ def demo_quiz_generation():
             quiz = generator.generate_quiz(topic, difficulty, num_questions=3)
 
             if 'error' in quiz:
-                print(f"❌ Error: {quiz['error']}")
+                print(f"Error: {quiz['error']}")
             else:
-                print(f"📝 {quiz.get('quiz_title', 'Quiz')}")
-                print(f"🎯 Difficulty: {quiz.get('difficulty', difficulty)}\n")
+                print(f"{quiz.get('quiz_title', 'Quiz')}")
+                print(f"Difficulty: {quiz.get('difficulty', difficulty)}\n")
 
                 if 'questions' in quiz:
                     for q in quiz['questions']:
                         print(f"\nQ{q['question_number']}. {q['question']}")
                         for opt_key, opt_val in q['options'].items():
                             print(f"   {opt_key}) {opt_val}")
-                        print(f"   ✓ Answer: {q['correct_answer']}")
+                        print(f"   Answer: {q['correct_answer']}")
                 else:
                     print(quiz.get('raw_response', 'Could not parse quiz'))
 
@@ -222,7 +222,7 @@ def demo_auto_grading():
     quiz = generator.generate_quiz("Photosynthesis", "medium", num_questions=5)
 
     if 'error' in quiz or 'questions' not in quiz:
-        print("⚠️ Using mock quiz for demo")
+        print("Using mock quiz for demo")
         # Create mock quiz
         quiz = {
             'quiz_title': 'Photosynthesis Quiz',
@@ -266,8 +266,8 @@ def demo_auto_grading():
             ]
         }
 
-    print(f"\n📝 Quiz: {quiz['quiz_title']}")
-    print(f"🎯 Difficulty: {quiz['difficulty']}\n")
+    print(f"\nQuiz: {quiz['quiz_title']}")
+    print(f"Difficulty: {quiz['difficulty']}\n")
 
     # Simulate three student scenarios
     scenarios = [
@@ -292,14 +292,14 @@ def demo_auto_grading():
 
         results = generator.grade_quiz(quiz, scenario['answers'])
 
-        print(f"📊 Score: {results['correct_answers']}/{results['total_questions']} "
+        print(f"Score: {results['correct_answers']}/{results['total_questions']} "
               f"({results['score_percentage']:.1f}%) - Grade: {results['grade']}")
-        print(f"💬 Feedback: {results['feedback']}")
-        print(f"🎚️  Next Difficulty: {results['difficulty_recommendation'].upper()}")
+        print(f"Feedback: {results['feedback']}")
+        print(f"Next Difficulty: {results['difficulty_recommendation'].upper()}")
 
         print("\nDetailed Results:")
         for detail in results['detailed_results']:
-            status = "✓" if detail['is_correct'] else "✗"
+            status = "CORRECT" if detail['is_correct'] else "INCORRECT"
             print(f"  {status} Q{detail['question_number']}: "
                   f"Your answer: {detail['student_answer']}, "
                   f"Correct: {detail['correct_answer']}")
@@ -307,7 +307,7 @@ def demo_auto_grading():
 
 if __name__ == "__main__":
     print("""
-    ⚠️  SETUP REQUIRED:
+    SETUP REQUIRED:
     1. Configure AWS credentials: aws configure
     2. Enable Amazon Bedrock in your AWS account
     3. Request access to Llama 3 model
@@ -320,4 +320,4 @@ if __name__ == "__main__":
     # demo_quiz_generation()
     demo_auto_grading()  # This works with mock data
 
-    print("\n✅ Demo complete!")
+    print("\nDemo complete!")

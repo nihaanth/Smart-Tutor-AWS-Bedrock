@@ -139,11 +139,11 @@ def demo_lesson_generation():
             result = generator.generate_lesson(topic, difficulty)
 
             if 'error' in result:
-                print(f"❌ Error generating lesson: {result['error']}")
+                print(f"Error generating lesson: {result['error']}")
             else:
                 print(result['content'])
-                print(f"\n📊 Tokens Used: {result['tokens_used']}")
-                print(f"⏰ Generated: {result['generated_at']}")
+                print(f"\nTokens Used: {result['tokens_used']}")
+                print(f"Generated: {result['generated_at']}")
 
             print("\n" + "-" * 60 + "\n")
 
@@ -175,7 +175,7 @@ def compare_difficulty_levels():
             word_count = len(result['content'].split())
             avg_word_length = sum(len(word) for word in result['content'].split()) / word_count
 
-            print(f"\n📊 Analysis:")
+            print(f"\nAnalysis:")
             print(f"   Word Count: {word_count}")
             print(f"   Avg Word Length: {avg_word_length:.2f} characters")
 
@@ -185,7 +185,7 @@ def compare_difficulty_levels():
 if __name__ == "__main__":
     # Note: This requires AWS credentials with Bedrock access
     print("""
-    ⚠️  SETUP REQUIRED:
+    SETUP REQUIRED:
     1. Configure AWS credentials: aws configure
     2. Enable Amazon Bedrock in your AWS account
     3. Request access to Claude 3 Sonnet model
@@ -198,4 +198,4 @@ if __name__ == "__main__":
     # demo_lesson_generation()
     # compare_difficulty_levels()
 
-    print("\n✅ Demo script ready. Uncomment function calls to run with AWS credentials.")
+    print("\nDemo script ready. Uncomment function calls to run with AWS credentials.")
